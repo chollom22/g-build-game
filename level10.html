@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>G BUILD GAME - Level 10</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#87ceeb;
+}
+
+header{
+    height:70px;
+    background:#07562f;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 15px;
+    position:relative;
+    z-index:10;
+}
+
+.title{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.level{
+    font-size:14px;
+    margin-top:4px;
+}
+
+button{
+    border:none;
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#backButton{
+    background:white;
+    color:#07562f;
+}
+
+#game{
+    width:100%;
+    height:calc(100vh - 70px);
+    position:relative;
+}
+
+#info{
+    position:absolute;
+    top:85px;
+    left:50%;
+    transform:translateX(-50%);
+    width:92%;
+    max-width:600px;
+    background:rgba(255,255,255,.94);
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+    z-index:5;
+    box-shadow:0 3px 10px rgba(0,0,0,.25);
+}
+
+#instruction{
+    font-size:16px;
+    line-height:1.5;
+    margin-bottom:10px;
+}
+
+#buildButton{
+    background:#0b6b3a;
+    color:white;
+    width:100%;
+    max-width:350px;
+}
+
+#buildButton:disabled{
+    background:#777;
+    cursor:not-allowed;
+}
+
+#standardBox{
+    margin-top:10px;
+    font-size:13px;
+    text-align:left;
+    line-height:1.6;
+}
+
+#standardBox strong{
+    display:block;
+    text-align:center;
+    margin-bottom:4px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div>
+    <div class="title">🏗️ G BUILD GAME</div>
+    <div class="level">LEVEL 10 — 🏙️ HIGH-RISE APARTMENT</div>
+</div>
+
+<button id="backButton" onclick="location.href='level9.html'">
+    ⬅️ LEVEL 9
+</button>
+
+</header>
+
+<div id="game">
+
+<div id="info">
+
+<div id="instruction">
+    Welcome to Level 10!<br>
+    Build the high-rise apartment according to the required standards.
+</div>
+
+<button id="buildButton">
+    START BUILDING 🏗️
+</button>
+
+<div id="standardBox">
+
+<strong>🏗️ BUILDING STANDARDS</strong>
+
+✓ Deep and strong foundation<br>
+✓ Structural columns<br>
+✓ Ground floor<br>
+✓ Main entrance<br>
+✓ Reception / lobby<br>
+✓ Multiple apartment floors<br>
+✓ Staircase<br>
+✓ Elevator / lift shaft<br>
+✓ Apartments<br>
+✓ Kitchens<br>
+✓ Bathrooms<br>
+✓ Fire / emergency exits<br>
+✓ Windows<br>
+✓ Balconies<br>
+✓ Parking area<br>
+✓ Accessibility ramp<br>
+✓ Roof<br>
+✓ Final inspection
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const scene =
+    new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x87ceeb);
+
+
+const camera =
+    new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth /
+        (window.innerHeight - 70),
+        0.1,
+        1000
+    );
+
+camera.position.set(
+    22,
+    18,
+    28
+);
+
+camera.lookAt(
+    0,
+    8,
+    0
+);
+
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight - 70
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
+
+document
+    .getElementById("game")
+    .appendChild(renderer.domElement);
+
+
+/* LIGHT */
+
+const ambient =
+    new THREE.AmbientLight(
+        0xffffff,
+        1.2
+    );
+
+scene.add(ambient);
+
+
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
+        1.5
+    );
+
+sun.position.set(
+    20,
+    30,
+    20
+);
+
+scene.add(sun);
+
+
+/* GROUND */
+
+const ground =
+    new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            45,
+            0.5,
+            45
+        ),
+
+        new THREE.MeshStandardMaterial({
+            color:0x4caf50
+        })
+
+    );
+
+ground.position.y =
+    -0.25;
+
+scene.add(ground);
+
+
+/* BUILDING */
+
+const building =
+    new THREE.Group();
+
+scene.add(building);
+
+
+/* FOUNDATION */
+
+const foundation =
+    new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            16,
+            1,
+            12
+        ),
+
+        new THREE.MeshStandardMaterial({
+            color:0x777777
+        })
+
+    );
+
+foundation.position.y =
+    0.5;
+
+building.add(foundation);
+
+
+/* STRUCTURE */
+
+const structure =
+    new THREE.Group();
+
+structure.visible =
+    false;
+
+building.add(structure);
+
+
+/* MAIN BUILDING BODY */
+
+const body =
+    new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            14,
+            18,
+            10
+        ),
+
+        new THREE.MeshStandardMaterial({
+            color:0xd8d8d8
+        })
+
+    );
+
+body.position.y =
+    10;
+
+structure.add(body);
+
+
+/* FLOOR LINES */
+
+for(let y=2; y<=18; y+=3){
+
+    const floorLine =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                14.2,
+                0.18,
+                10.2
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:0x555555
+            })
+
+        );
+
+    floorLine.position.y =
+        y;
+
+    structure.add(floorLine);
+}
+
+
+/* STRUCTURAL COLUMNS */
+
+for(let x of [-6,-2,2,6]){
+
+    for(let z of [-4,4]){
+
+        const column =
+            new THREE.Mesh(
+
+                new THREE.BoxGeometry(
+                    0.7,
+                    18,
+                    0.7
+                ),
+
+                new THREE.MeshStandardMaterial({
+                    color:0x666666
+                })
+
+            );
+
+        column.position.set(
+            x,
+            10,
+            z
+        );
+
+        structure.add(column
