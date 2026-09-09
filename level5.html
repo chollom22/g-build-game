@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>G Build Game - Level 5</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#87ceeb;
+}
+
+#ui{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:10;
+    text-align:center;
+    color:white;
+    background:rgba(0,0,0,.68);
+    padding:10px;
+}
+
+h1{
+    margin:4px 0;
+    font-size:22px;
+}
+
+#level{
+    font-weight:bold;
+    margin:5px;
+}
+
+#instruction{
+    font-size:14px;
+    line-height:1.4;
+    margin:5px auto;
+    max-width:700px;
+}
+
+button{
+    border:0;
+    border-radius:10px;
+    padding:11px 16px;
+    margin:4px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#buildButton{
+    background:#0b6b3a;
+    color:white;
+}
+
+#backButton{
+    background:#555;
+    color:white;
+}
+
+canvas{
+    display:block;
+}
+
+@media(max-width:600px){
+
+    h1{
+        font-size:18px;
+    }
+
+    #instruction{
+        font-size:12px;
+    }
+
+    button{
+        padding:9px 12px;
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+
+<h1>🏗️ G BUILD GAME</h1>
+
+<div id="level">
+LEVEL 5 — SMALL OFFICE BUILDING
+</div>
+
+<div id="instruction">
+Build the foundation first.
+</div>
+
+<button id="backButton">
+⬅️ LEVEL 4
+</button>
+
+<button id="buildButton">
+BUILD FOUNDATION
+</button>
+
+</div>
+
+<script>
+
+const scene = new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x87ceeb);
+
+
+const camera =
+    new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+
+camera.position.set(15,12,17);
+
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
+
+document.body.appendChild(renderer.domElement);
+
+
+// LIGHT
+
+const ambient =
+    new THREE.AmbientLight(
+        0xffffff,
+        0.7
+    );
+
+scene.add(ambient);
+
+
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
+        1
+    );
+
+sun.position.set(
+    10,
+    20,
+    10
+);
+
+scene.add(sun);
+
+
+// GROUND
+
+const ground =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            32,
+            0.3,
+            27
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x3b9d23
+        })
+    );
+
+ground.position.y=-0.15;
+
+scene.add(ground);
+
+
+// BUILDING
+
+const building =
+    new THREE.Group();
+
+scene.add(building);
+
+
+// MATERIALS
+
+const foundationMat =
+    new THREE.MeshStandardMaterial({
+        color:0x777777
+    });
+
+const wallMat =
+    new THREE.MeshStandardMaterial({
+        color:0xe8e0c8
+    });
+
+const columnMat =
+    new THREE.MeshStandardMaterial({
+        color:0x999999
+    });
+
+const doorMat =
+    new THREE.MeshStandardMaterial({
+        color:0x563318
+    });
+
+const windowMat =
+    new THREE.MeshStandardMaterial({
+        color:0x4bb9df
+    });
+
+const floorMat =
+    new THREE.MeshStandardMaterial({
+        color:0xc2c2c2
+    });
+
+const roofMat =
+    new THREE.MeshStandardMaterial({
+        color:0x333333
+    });
+
+
+// BOX FUNCTION
+
+function addBox(
+    width,
+    height,
+    depth,
+    x,
+    y,
+    z,
+    material
+){
+
+    const box =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                width,
+                height,
+                depth
+            ),
+            material
+        );
+
+    box.position.set(
+        x,
+        y,
+        z
+    );
+
+    building.add(box);
+
+    return box;
+}
+
+
+// STAGE
+
+let stage = 0;
+
+
+const instruction =
+    document.getElementById(
+        "instruction"
+    );
+
+const buildButton =
+    document.getElementById(
+        "buildButton"
+    );
+
+const backButton =
+    document.getElementById(
+        "backButton"
+    );
+
+
+// BUILD PROCESS
+
+buildButton.addEventListener(
+"click",
+function(){
+
+
+    // 1 FOUNDATION
+
+    if(stage === 0){
+
+        addBox(
+            12,
+            0.7,
+            9,
+            0,
+            0.35,
+            0,
+            foundationMat
+        );
+
+        instruction.innerHTML =
+            "Foundation complete.<br>" +
+            "Now install the structural columns.";
+
+        buildButton.innerHTML =
+            "BUILD COLUMNS";
+
+        stage++;
+    }
+
+
+    // 2 COLUMNS
+
+    else if(stage === 1){
+
+        const positions = [
+
+            [-5.5,2,-4],
+            [0,2,-4],
+            [5.5,2,-4],
+
+            [-5.5,2,4],
+            [0,2,4],
+            [5.5,2,4],
+
+            [-5.5,2,0],
+            [5.5,2,0]
+
+        ];
+
+        positions.forEach(
+        function(pos){
+
+            addBox(
+                0.5,
+                3.5,
+                0.5,
+                pos[0],
+                pos[1],
+                pos[2],
+                columnMat
+            );
+
+        });
+
+        instruction.innerHTML =
+            "Columns installed.<br>" +
+            "Now build the ground-floor walls.";
+
+        buildButton.innerHTML =
+            "BUILD GROUND FLOOR";
+
+        stage++;
+    }
+
+
+    // 3 GROUND FLOOR
+
+    else if(stage === 2){
+
+        addBox(
+            12,
+            3.5,
+            0.4,
+            0,
+            2,
+            -4.3,
+            wallMat
+        );
+
+        addBox(
+            12,
+            3.5,
+            0.4,
+            0,
+            2,
+            4.3,
+            wallMat
+        );
+
+        addBox(
+            0.4,
+            3.5,
+            9,
+            -5.8,
+            2,
+            0,
+            wallMat
+        );
+
+        addBox(
+            0.4,
+            3.5,
+            9,
+            5.8,
+            2,
+            0,
+            wallMat
+        );
+
+        instruction.innerHTML =
+            "Ground floor completed.<br>" +
+            "Now install the main entrance.";
+
+        buildButton.innerHTML =
+            "BUILD MAIN ENTRANCE";
+
+        stage++;
+    }
+
+
+    // 4 ENTRANCE
+
+    else if(stage === 3){
+
+        addBox(
+            1.6,
+            2.6,
+            0.25,
+            0,
+            1.4,
+            -4.5,
+            doorMat
+        );
+
+        instruction.innerHTML =
+            "Main entrance installed.<br>" +
+            "Now build the reception.";
+
+        buildButton.innerHTML =
+            "BUILD RECEPTION";
+
+        stage++;
+    }
+
+
+    // 5 RECEPTION
+
+    else if(stage === 4){
+
+        addBox(
+            3.5,
+            0.9,
+            0.9,
+            -2.8,
+            0.8,
+            -2,
+            floorMat
+        );
+
+        instruction.innerHTML =
+            "Reception completed.<br>" +
+            "Now create the first office rooms.";
+
+        buildButton.innerHTML =
+            "BUILD OFFICE ROOMS";
+
+        stage++;
+    }
+
+
+    // 6 OFFICE ROOMS
+
+    else if(stage === 5){
+
+        // ROOM PARTITIONS
+
+        addBox(
+            0.3,
+            3,
+            8,
+            0,
+            1.8,
+            0,
+            wallMat
+        );
+
+        addBox(
+            5.5,
+            3,
+            0.3,
+            -3,
+            1.8,
+            1.5,
+            wallMat
+        );
+
+        addBox(
+            5.5,
+            3,
+            0.3,
+            3,
+            1.8,
+            1.5,
+            wallMat
+        );
+
+        instruction.innerHTML =
+            "Office rooms completed.<br>" +
+            "Now install the staircase.";
+
+        buildButton.innerHTML =
+            "BUILD STAIRCASE";
+
+        stage++;
+    }
+
+
+    // 7 STAIRCASE
+
+    else if(stage === 6){
+
+        for(let i=0;i<7;i++){
+
+            addBox(
+                3,
+                0.35,
+                0.8,
+                -3.5 + i*0.35,
+                0.45 + i*0.45,
+                2.8 - i*0.25,
+                floorMat
+            );
+
+        }
+
+        instruction.innerHTML =
+            "Staircase completed.<br>" +
+            "Now construct the upper floor.";
+
+        buildButton.innerHTML =
+            "BUILD UPPER FLOOR";
+
+        stage++;
+    }
+
+
+    // 8 UPPER FLOOR
+
+    else if(stage === 7){
+
+        addBox(
+            12,
+            0.5,
+            9,
+            0,
+            3.8,
+            0,
+            floorMat
+        );
+
+        addBox(
+            12,
+            3,
+            0.4,
+            0,
+            5.5,
+            -4.3,
+            wallMat
+        );
+
+        addBox(
+            12,
+            3,
+            0.4,
+            0,
+            5.5,
+            4.3,
+            wallMat
+        );
+
+        addBox(
+            0.4,
+            3,
+            9,
+            -5.8,
+            5.5,
+            0,
+            wallMat
+        );
+
+        addBox(
+            0.4,
+            3,
+            9,
+            5.8,
+            5.5,
+            0,
+            wallMat
+        );
+
+        instruction.innerHTML =
+            "Upper floor completed.<br>" +
+            "Now create the upper offices.";
+
+        buildButton.innerHTML =
+            "BUILD UPPER OFFICES";
+
+        stage++;
+    }
+
+
+    // 9 UPPER OFFICES
+
+    else if(stage === 8){
+
+        addBox(
+            0.3,
+            2.7,
+            8,
+            0,
+            5.4,
+            0,
+            wallMat
+        );
+
+        instruction.innerHTML =
+            "Upper offices completed.<br>" +
+            "Now install the windows.";
+
+        buildButton.innerHTML =
+            "INSTALL WINDOWS";
+
+        stage++;
+    }
+
+
+    // 10 WINDOWS
+
+    else if(stage === 9){
+
+        const windows = [
+
+            [-3.5,2,-4.52],
+            [3.5,2,-4.52],
+
+            [-3.5,5.4,-4.52],
+            [3.5,5.4,-4.52],
+
+            [-5.98,2,-1.5],
+            [-5.98,2,2],
+
+            [5.98,2,-1.5],
+            [5.98,2,2],
+
+            [-5.98,5.4,-1.5],
+            [-5.98,5.4,2],
+
+            [5.98,5.4,-1.5],
+            [5.98,5.4,2]
+
+        ];
+
+        windows.forEach(
+        function(pos){
+
+            addBox(
+                1.5,
+                1.2,
+                0.15,
+                pos[0],
+                pos[1],
+                pos[2],
+                windowMat
+            );
+
+        });
+
+        instruction.innerHTML =
+            "Windows installed.<br>" +
+            "Now build the upper-floor balcony.";
+
+        buildButton.innerHTML =
+            "BUILD BALCONY";
+
+        stage++;
+    }
+
+
+    // 11 BALCONY
+
+    else if(stage === 10){
+
+        addBox(
+            5,
+            0.4,
+            2,
+            0,
+            3.9,
+            -5.2,
+            floorMat
+        );
+
+        // BALCONY RAILING
+
+        addBox(
+            5,
+            1,
+            0.2,
+            0,
+            4.5,
+            -6.1,
+            columnMat
+        );
+
+        instruction.innerHTML =
+            "Balcony completed.<br>" +
+            "Now build the roof.";
+
+        buildButton.innerHTML =
+            "BUILD ROOF";
+
+        stage++;
+    }
+
+
+    // 12 ROOF
+
+    else if(stage === 11){
+
+        addBox(
+            12.5,
+            0.7,
+            9.5,
+            0,
+            7.1,
+            0,
+            roofMat
+        );
+
+        instruction.innerHTML =
+            "Roof completed.<br><br>" +
+            "Perform the final building inspection.";
+
+        buildButton.innerHTML =
+            "FINAL INSPECTION";
+
+        stage++;
+    }
+
+
+    // 13 INSPECTION
+
+    else if(stage === 12){
+
+        instruction.innerHTML =
+            "🎉 LEVEL 5 COMPLETE! 🎉<br><br>" +
+
+            "✓ Foundation<br>" +
+            "✓ Structural columns<br>" +
+            "✓ Ground floor<br>" +
+            "✓ Main entrance<br>" +
+            "✓ Reception<br>" +
+            "✓ Office rooms<br>" +
+            "✓ Staircase<br>" +
+            "✓ Upper floor<br>" +
+            "✓ Upper offices<br>" +
+            "✓ Windows<br>" +
+            "✓ Balcony<br>" +
+            "✓ Roof";
+
+        buildButton.innerHTML =
+            "LEVEL 6 🔒";
+
+        buildButton.disabled = true;
+
+        stage++;
+    }
+
+});
+
+
+// BACK
+
+backButton.addEventListener(
+"click",
+function(){
+
+    window.location.href =
+        "level4.html";
+
+});
+
+
+// ROTATE BUILDING
+
+let dragging = false;
+let previousX = 0;
+
+renderer.domElement.addEventListener(
+"pointerdown",
+function(event){
+
+    dragging = true;
+    previousX = event.clientX;
+
+});
+
+renderer.domElement.addEventListener(
+"pointerup",
+function(){
+
+    dragging = false;
+
+});
+
+renderer.domElement.addEventListener(
+"pointerleave",
+function(){
+
+    dragging = false;
+
+});
+
+renderer.domElement.addEventListener(
+"pointermove",
+function(event){
+
+    if(!dragging) return;
+
+    const difference =
+        event.clientX - previousX;
+
+    building.rotation.y +=
+        difference * 0.01;
+
+    previousX =
+        event.clientX;
+
+});
+
+
+// RESIZE
+
+window.addEventListener(
+"resize",
+function(){
+
+    camera.aspect =
+        window.innerWidth /
+        window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+});
+
+
+// ANIMATION
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
