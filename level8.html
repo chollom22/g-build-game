@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Level 8 | G Build Game</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#eef7f1;
+}
+
+header{
+    height:70px;
+    background:#0b6b3a;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+    font-weight:bold;
+    position:relative;
+    z-index:10;
+}
+
+#game{
+    width:100%;
+    height:calc(100vh - 70px);
+    position:relative;
+}
+
+#info{
+    position:absolute;
+    top:12px;
+    left:50%;
+    transform:translateX(-50%);
+    width:92%;
+    max-width:520px;
+    background:rgba(255,255,255,0.95);
+    padding:12px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 3px 12px rgba(0,0,0,0.2);
+    z-index:5;
+}
+
+#levelTitle{
+    font-size:18px;
+    font-weight:bold;
+    color:#0b6b3a;
+    margin-bottom:7px;
+}
+
+#instruction{
+    font-size:14px;
+    line-height:1.4;
+}
+
+#standards{
+    margin-top:8px;
+    text-align:left;
+    font-size:12px;
+    line-height:1.5;
+}
+
+#controls{
+    position:absolute;
+    bottom:15px;
+    left:50%;
+    transform:translateX(-50%);
+    width:92%;
+    max-width:520px;
+    display:flex;
+    gap:10px;
+    z-index:10;
+}
+
+button{
+    flex:1;
+    border:none;
+    padding:14px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#backButton{
+    background:#777;
+    color:white;
+}
+
+#buildButton{
+    background:#0b6b3a;
+    color:white;
+}
+
+#buildButton:active{
+    transform:scale(0.97);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+🏗️ G BUILD GAME
+</header>
+
+<div id="game">
+
+    <div id="info">
+
+        <div id="levelTitle">
+            LEVEL 8 — 🛒 SHOPPING CENTRE
+        </div>
+
+        <div id="instruction">
+            Start construction with the foundation.
+        </div>
+
+        <div id="standards">
+
+            <b>🏗️ BUILDING STANDARDS</b><br>
+
+            ✓ Strong foundation<br>
+            ✓ Structural columns<br>
+            ✓ Ground floor<br>
+            ✓ Main entrance<br>
+            ✓ Shops<br>
+            ✓ Shopping aisles<br>
+            ✓ Offices<br>
+            ✓ Staircase<br>
+            ✓ Upper floor<br>
+            ✓ Food court<br>
+            ✓ Toilets<br>
+            ✓ Windows<br>
+            ✓ Parking area<br>
+            ✓ Accessibility ramp<br>
+            ✓ Roof
+
+        </div>
+
+    </div>
+
+    <div id="controls">
+
+        <button id="backButton">
+            ⬅️ LEVEL 7
+        </button>
+
+        <button id="buildButton">
+            BUILD FOUNDATION 🧱
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+// =============================
+// BASIC ELEMENTS
+// =============================
+
+const game =
+    document.getElementById("game");
+
+const instruction =
+    document.getElementById("instruction");
+
+const buildButton =
+    document.getElementById("buildButton");
+
+const backButton =
+    document.getElementById("backButton");
+
+
+// =============================
+// THREE.JS SCENE
+// =============================
+
+const scene =
+    new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x9bd7ff);
+
+
+// =============================
+// CAMERA
+// =============================
+
+const camera =
+    new THREE.PerspectiveCamera(
+        55,
+        window.innerWidth /
+        (window.innerHeight - 70),
+        0.1,
+        1000
+    );
+
+camera.position.set(
+    17,
+    13,
+    21
+);
+
+camera.lookAt(
+    0,
+    4,
+    0
+);
+
+
+// =============================
+// RENDERER
+// =============================
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight - 70
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
+
+game.appendChild(
+    renderer.domElement
+);
+
+
+// =============================
+// LIGHTING
+// =============================
+
+const ambientLight =
+    new THREE.AmbientLight(
+        0xffffff,
+        0.75
+    );
+
+scene.add(ambientLight);
+
+
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
+        1
+    );
+
+sun.position.set(
+    12,
+    20,
+    12
+);
+
+scene.add(sun);
+
+
+// =============================
+// GROUND
+// =============================
+
+const ground =
+    new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            35,
+            0.3,
+            30
+        ),
+
+        new THREE.MeshStandardMaterial({
+            color:0x55a630
+        })
+
+    );
+
+ground.position.y =
+    -0.15;
+
+scene.add(ground);
+
+
+// =============================
+// PARKING AREA
+// =============================
+
+const parking =
+    new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            28,
+            0.12,
+            8
+        ),
+
+        new THREE.MeshStandardMaterial({
+            color:0x555555
+        })
+
+    );
+
+parking.position.set(
+    0,
+    0.06,
+    10
+);
+
+scene.add(parking);
+
+
+// =============================
+// BUILDING GROUP
+// =============================
+
+const building =
+    new THREE.Group();
+
+scene.add(building);
+
+
+// =============================
+// ADD BOX FUNCTION
+// =============================
+
+function addBox(
+    width,
+    height,
+    depth,
+    x,
+    y,
+    z,
+    color
+){
+
+    const mesh =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                width,
+                height,
+                depth
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:color
+            })
+
+        );
+
+    mesh.position.set(
+        x,
+        y,
+        z
+    );
+
+    building.add(mesh);
+
+    return mesh;
+}
+
+
+// =============================
+// STAGE SYSTEM
+// =============================
+
+let stage = 0;
+
+
+buildButton.addEventListener(
+"click",
+function(){
+
+
+    // =========================
+    // STAGE 0
+    // FOUNDATION
+    // =========================
+
+    if(stage === 0){
+
+        addBox(
+            14,
+            0.7,
+            10,
+            0,
+            0.35,
+            0,
+            0x777777
+        );
+
+        instruction.innerHTML =
+            "🧱 Foundation completed!<br>" +
+            "Next: construct the structural columns.";
+
+        buildButton.innerHTML =
+            "BUILD COLUMNS 🏗️";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 1
+    // COLUMNS
+    // =========================
+
+    else if(stage === 1){
+
+        const positions = [
+
+            [-6,2,-4],
+            [6,2,-4],
+            [-6,2,4],
+            [6,2,4],
+            [0,2,-4],
+            [0,2,4]
+
+        ];
+
+        positions.forEach(
+            function(pos){
+
+                addBox(
+                    0.6,
+                    4,
+                    0.6,
+                    pos[0],
+                    pos[1],
+                    pos[2],
+                    0x777777
+                );
+
+            }
+        );
+
+        instruction.innerHTML =
+            "🏗️ Structural columns completed!<br>" +
+            "Next: construct the ground floor.";
+
+        buildButton.innerHTML =
+            "BUILD GROUND FLOOR";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 2
+    // GROUND FLOOR
+    // =========================
+
+    else if(stage === 2){
+
+        addBox(
+            13.5,
+            3.5,
+            9.5,
+            0,
+            2.1,
+            0,
+            0xd9b382
+        );
+
+        instruction.innerHTML =
+            "🏬 Ground floor completed!<br>" +
+            "Next: create the main shopping entrance.";
+
+        buildButton.innerHTML =
+            "BUILD MAIN ENTRANCE 🚪";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 3
+    // MAIN ENTRANCE
+    // =========================
+
+    else if(stage === 3){
+
+        addBox(
+            3,
+            2.8,
+            0.3,
+            0,
+            1.7,
+            -4.9,
+            0x4b2e20
+        );
+
+        instruction.innerHTML =
+            "🚪 Main entrance completed!<br>" +
+            "Next: create the shops.";
+
+        buildButton.innerHTML =
+            "BUILD SHOPS 🛍️";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 4
+    // SHOPS
+    // =========================
+
+    else if(stage === 4){
+
+        addBox(
+            3.5,
+            2.3,
+            3,
+            -4.5,
+            3.5,
+            -1.5,
+            0xc98f65
+        );
+
+        addBox(
+            3.5,
+            2.3,
+            3,
+            0,
+            3.5,
+            -1.5,
+            0xe0a96d
+        );
+
+        addBox(
+            3.5,
+            2.3,
+            3,
+            4.5,
+            3.5,
+            -1.5,
+            0xb87333
+        );
+
+        instruction.innerHTML =
+            "🛍️ Shops completed!<br>" +
+            "Next: create shopping aisles.";
+
+        buildButton.innerHTML =
+            "BUILD SHOPPING AISLES";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 5
+    // SHOPPING AISLES
+    // =========================
+
+    else if(stage === 5){
+
+        addBox(
+            1,
+            0.5,
+            6,
+            -3,
+            2.8,
+            1.5,
+            0x888888
+        );
+
+        addBox(
+            1,
+            0.5,
+            6,
+            0,
+            2.8,
+            1.5,
+            0x888888
+        );
+
+        addBox(
+            1,
+            0.5,
+            6,
+            3,
+            2.8,
+            1.5,
+            0x888888
+        );
+
+        instruction.innerHTML =
+            "🛒 Shopping aisles completed!<br>" +
+            "Next: create office spaces.";
+
+        buildButton.innerHTML =
+            "BUILD OFFICES 🏢";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 6
+    // OFFICES
+    // =========================
+
+    else if(stage === 6){
+
+        addBox(
+            4,
+            2.2,
+            3,
+            -4,
+            3.5,
+            2.8,
+            0xb0a090
+        );
+
+        addBox(
+            4,
+            2.2,
+            3,
+            4,
+            3.5,
+            2.8,
+            0xb0a090
+        );
+
+        instruction.innerHTML =
+            "🏢 Offices completed!<br>" +
+            "Next: construct the staircase.";
+
+        buildButton.innerHTML =
+            "BUILD STAIRCASE 🪜";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 7
+    // STAIRCASE
+    // =========================
+
+    else if(stage === 7){
+
+        for(
+            let i = 0;
+            i < 7;
+            i++
+        ){
+
+            addBox(
+                0.8,
+                0.3,
+                2.5,
+                -2.5 + i * 0.7,
+                4 + i * 0.3,
+                0,
+                0x8b5a2b
+            );
+
+        }
+
+        instruction.innerHTML =
+            "🪜 Staircase completed!<br>" +
+            "Next: construct the upper floor.";
+
+        buildButton.innerHTML =
+            "BUILD UPPER FLOOR";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 8
+    // UPPER FLOOR
+    // =========================
+
+    else if(stage === 8){
+
+        addBox(
+            13.5,
+            0.6,
+            9.5,
+            0,
+            6.1,
+            0,
+            0x777777
+        );
+
+        instruction.innerHTML =
+            "🏢 Upper floor completed!<br>" +
+            "Next: build the food court.";
+
+        buildButton.innerHTML =
+            "BUILD FOOD COURT 🍔";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 9
+    // FOOD COURT
+    // =========================
+
+    else if(stage === 9){
+
+        addBox(
+            8,
+            2.4,
+            4,
+            0,
+            7.6,
+            1.5,
+            0xd08c60
+        );
+
+        addBox(
+            2,
+            0.5,
+            1.5,
+            -3,
+            6.8,
+            -1.5,
+            0xffffff
+        );
+
+        addBox(
+            2,
+            0.5,
+            1.5,
+            0,
+            6.8,
+            -1.5,
+            0xffffff
+        );
+
+        addBox(
+            2,
+            0.5,
+            1.5,
+            3,
+            6.8,
+            -1.5,
+            0xffffff
+        );
+
+        instruction.innerHTML =
+            "🍔 Food court completed!<br>" +
+            "Next: add toilets.";
+
+        buildButton.innerHTML =
+            "BUILD TOILETS 🚻";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 10
+    // TOILETS
+    // =========================
+
+    else if(stage === 10){
+
+        addBox(
+            3,
+            2,
+            2.5,
+            -4,
+            7.5,
+            -2.5,
+            0xe8e8e8
+        );
+
+        addBox(
+            3,
+            2,
+            2.5,
+            4,
+            7.5,
+            -2.5,
+            0xe8e8e8
+        );
+
+        instruction.innerHTML =
+            "🚻 Toilets completed!<br>" +
+            "Next: install windows.";
+
+        buildButton.innerHTML =
+            "ADD WINDOWS 🪟";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 11
+    // WINDOWS
+    // =========================
+
+    else if(stage === 11){
+
+        for(
+            let i = -5;
+            i <= 5;
+            i += 2
+        ){
+
+            addBox(
+                1.2,
+                1.2,
+                0.2,
+                i,
+                3,
+                -4.9,
+                0x4da6ff
+            );
+
+            addBox(
+                1.2,
+                1.2,
+                0.2,
+                i,
+                7.5,
+                -4.9,
+                0x4da6ff
+            );
+
+        }
+
+        instruction.innerHTML =
+            "🪟 Windows completed!<br>" +
+            "Next: prepare the parking area.";
+
+        buildButton.innerHTML =
+            "BUILD PARKING AREA 🚗";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 12
+    // PARKING
+    // =========================
+
+    else if(stage === 12){
+
+        for(
+            let i = -10;
+            i <= 10;
+            i += 4
+        ){
+
+            addBox(
+                0.2,
+                0.03,
+                5,
+                i,
+                0.15,
+                10,
+                0xffffff
+            );
+
+        }
+
+        instruction.innerHTML =
+            "🚗 Parking area completed!<br>" +
+            "Next: add the accessibility ramp.";
+
+        buildButton.innerHTML =
+            "BUILD ACCESSIBILITY RAMP ♿";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 13
+    // ACCESSIBILITY RAMP
+    // =========================
+
+    else if(stage === 13){
+
+        addBox(
+            3,
+            0.3,
+            2,
+            0,
+            0.5,
+            -6,
+            0x999999
+        );
+
+        addBox(
+            3,
+            0.3,
+            2,
+            0,
+            0.8,
+            -7,
+            0x999999
+        );
+
+        instruction.innerHTML =
+            "♿ Accessibility ramp completed!<br>" +
+            "Next: install the shopping centre roof.";
+
+        buildButton.innerHTML =
+            "BUILD ROOF 🏠";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 14
+    // ROOF
+    // =========================
+
+    else if(stage === 14){
+
+        addBox(
+            15,
+            0.8,
+            11,
+            0,
+            10,
+            0,
+            0x8b4513
+        );
+
+        instruction.innerHTML =
+            "🏠 Roof completed!<br>" +
+            "Perform the final shopping centre inspection.";
+
+        buildButton.innerHTML =
+            "FINAL INSPECTION 🔍";
+
+        stage++;
+
+    }
+
+
+    // =========================
+    // STAGE 15
+    // FINAL INSPECTION
+    // =========================
+
+    else if(stage === 15){
+
+        instruction.innerHTML =
+            "🎉 LEVEL 8 COMPLETE! 🎉<br><br>" +
+
+            "✓ Strong foundation<br>" +
+            "✓ Structural columns<br>" +
+            "✓ Ground floor<br>" +
+            "✓ Main entrance<br>" +
+            "✓ Shops<br>" +
+            "✓ Shopping aisles<br>" +
+            "✓ Offices<br>" +
+            "✓ Staircase<br>" +
+            "✓ Upper floor<br>" +
+            "✓ Food court<br>" +
+            "✓ Toilets<br>" +
+            "✓ Windows<br>" +
+            "✓ Parking area<br>" +
+            "✓ Accessibility ramp<br>" +
+            "✓ Roof<br><br>" +
+
+            "🛒 SHOPPING CENTRE APPROVED!";
+
+        buildButton.innerHTML =
+            "LEVEL 9 🔒";
+
+        buildButton.disabled =
+            true;
+
+        stage++;
+
+    }
+
+});
+
+
+// =============================
+// BACK BUTTON
+// =============================
+
+backButton.addEventListener(
+"click",
+function(){
+
+    window.location.href =
+        "level7.html";
+
+});
+
+
+// =============================
+// ANIMATION
+// =============================
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    building.rotation.y += 0.002;
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+animate();
+
+
+// =============================
+// RESIZE
+// =============================
+
+window.addEventListener(
+"resize",
+function(){
+
+    camera.aspect =
+        window.innerWidth /
+        (window.innerHeight - 70);
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight - 70
+    );
+
+});
+
+</script>
+
+</body>
+
+  </html>
