@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>G Build Game — Level 9</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#87ceeb;
+}
+
+header{
+    height:70px;
+    background:#0b6b3a;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 12px;
+    position:relative;
+    z-index:10;
+}
+
+.title{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.level{
+    font-size:13px;
+    margin-top:3px;
+}
+
+.back{
+    background:white;
+    color:#0b6b3a;
+    border:none;
+    border-radius:8px;
+    padding:10px 12px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#game{
+    width:100%;
+    height:calc(100vh - 70px);
+    position:relative;
+}
+
+.panel{
+    position:absolute;
+    top:85px;
+    left:10px;
+    width:290px;
+    max-width:calc(100% - 20px);
+    background:rgba(255,255,255,0.95);
+    border-radius:12px;
+    padding:14px;
+    z-index:5;
+    box-shadow:0 4px 15px rgba(0,0,0,.25);
+}
+
+.panel h2{
+    margin:0 0 8px;
+    font-size:17px;
+    color:#0b6b3a;
+}
+
+#instruction{
+    font-size:14px;
+    line-height:1.4;
+    margin-bottom:10px;
+}
+
+.standards{
+    font-size:12px;
+    line-height:1.6;
+    max-height:190px;
+    overflow:auto;
+}
+
+button#buildButton{
+    width:100%;
+    margin-top:10px;
+    padding:13px;
+    border:none;
+    border-radius:9px;
+    background:#0b6b3a;
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+}
+
+button#buildButton:disabled{
+    background:#777;
+}
+
+@media(max-width:600px){
+
+    .title{
+        font-size:16px;
+    }
+
+    .level{
+        font-size:11px;
+    }
+
+    .back{
+        padding:8px;
+        font-size:12px;
+    }
+
+    .panel{
+        width:245px;
+        top:80px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div>
+        <div class="title">🏗️ G BUILD GAME</div>
+        <div class="level">LEVEL 9 — 🏢 LARGE COMMERCIAL COMPLEX</div>
+    </div>
+
+    <button class="back" onclick="location.href='level8.html'">
+        ⬅️ LEVEL 8
+    </button>
+
+</header>
+
+<div id="game">
+
+    <div class="panel">
+
+        <h2>🏢 Large Commercial Complex</h2>
+
+        <div id="instruction">
+            Start construction by laying the foundation.
+        </div>
+
+        <div class="standards">
+
+            <b>📋 BUILDING STANDARDS</b><br>
+
+            ☐ Deep / strong foundation<br>
+            ☐ Structural columns<br>
+            ☐ Ground floor<br>
+            ☐ Main entrance<br>
+            ☐ Reception & security<br>
+            ☐ Commercial units<br>
+            ☐ Loading area<br>
+            ☐ Staircase<br>
+            ☐ Elevator / lift shaft<br>
+            ☐ Upper floor<br>
+            ☐ Offices<br>
+            ☐ Restrooms<br>
+            ☐ Emergency exits<br>
+            ☐ Windows / glass facade<br>
+            ☐ Parking area<br>
+            ☐ Accessibility ramp<br>
+            ☐ Roof<br>
+            ☐ Final inspection
+
+        </div>
+
+        <button id="buildButton">
+            🧱 BUILD FOUNDATION
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+let scene;
+let camera;
+let renderer;
+let building;
+
+let stage = 0;
+
+const instruction =
+    document.getElementById("instruction");
+
+const buildButton =
+    document.getElementById("buildButton");
+
+
+/* =========================
+   SCENE
+========================= */
+
+scene = new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x87ceeb);
+
+
+/* =========================
+   CAMERA
+========================= */
+
+camera =
+    new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth /
+        (window.innerHeight - 70),
+        0.1,
+        1000
+    );
+
+camera.position.set(
+    18,
+    14,
+    20
+);
+
+camera.lookAt(
+    0,
+    5,
+    0
+);
+
+
+/* =========================
+   RENDERER
+========================= */
+
+renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight - 70
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
+
+document
+    .getElementById("game")
+    .appendChild(renderer.domElement);
+
+
+/* =========================
+   LIGHTS
+========================= */
+
+const ambient =
+    new THREE.AmbientLight(
+        0xffffff,
+        0.75
+    );
+
+scene.add(ambient);
+
+
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
+        1
+    );
+
+sun.position.set(
+    15,
+    25,
+    10
+);
+
+scene.add(sun);
+
+
+/* =========================
+   GROUND
+========================= */
+
+const ground =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            40,
+            0.4,
+            40
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x4caf50
+        })
+    );
+
+ground.position.y = -0.2;
+
+scene.add(ground);
+
+
+/* =========================
+   BUILDING GROUP
+========================= */
+
+building =
+    new THREE.Group();
+
+scene.add(building);
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function addBox(
+    width,
+    height,
+    depth,
+    x,
+    y,
+    z,
+    color
+){
+
+    const mesh =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                width,
+                height,
+                depth
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:color
+            })
+
+        );
+
+    mesh.position.set(
+        x,
+        y,
+        z
+    );
+
+    building.add(mesh);
+
+    return mesh;
+}
+
+
+function addWindow(
+    x,
+    y,
+    z,
+    rotationY = 0
+){
+
+    const windowBox =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                1.6,
+                1.5,
+                0.15
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:0x63c5da,
+                metalness:0.2,
+                roughness:0.2
+            })
+
+        );
+
+    windowBox.position.set(
+        x,
+        y,
+        z
+    );
+
+    windowBox.rotation.y =
+        rotationY;
+
+    building.add(windowBox);
+}
+
+
+/* =========================
+   BUILD STAGES
+========================= */
+
+function buildStage(){
+
+    /* 0 FOUNDATION */
+
+    if(stage === 0){
+
+        addBox(
+            16,
+            0.8,
+            12,
+            0,
+            0.4,
+            0,
+            0x777777
+        );
+
+        instruction.innerHTML =
+            "🏗️ Foundation completed.<br>" +
+            "A large commercial complex needs a strong base.";
+
+        buildButton.innerHTML =
+            "🏛️ ADD STRUCTURAL COLUMNS";
+    }
+
+
+    /* 1 STRUCTURAL COLUMNS */
+
+    else if(stage === 1){
+
+        const positions = [
+            [-7,-5],
+            [-7,5],
+            [7,-5],
+            [7,5],
+            [0,-5],
+            [0,5]
+        ];
+
+        positions.forEach(pos => {
+
+            addBox(
+                0.7,
+                7,
+                0.7,
+                pos[0],
+                4,
+                pos[1],
+                0x777777
+            );
+
+        });
+
+        instruction.innerHTML =
+            "🏛️ Structural columns installed.<br>" +
+            "They support the building above.";
+
+        buildButton.innerHTML =
+            "🧱 BUILD GROUND FLOOR";
+    }
+
+
+    /* 2 GROUND FLOOR */
+
+    else if(stage === 2){
+
+        addBox(
+            15,
+            0.5,
+            11,
+            0,
+            7.5,
+            0,
+            0xd7d7d7
+        );
+
+        addBox(
+            15,
+            6,
+            0.5,
+            0,
+            4,
+            -5.5,
+            0xe8e8e8
+        );
+
+        addBox(
+            0.5,
+            6,
+            11,
+            -7.5,
+            4,
+            0,
+            0xe8e8e8
+        );
+
+        addBox(
+            0.5,
+            6,
+            11,
+            7.5,
+            4,
+            0,
+            0xe8e8e8
+        );
+
+        instruction.innerHTML =
+            "🧱 Ground floor completed.<br>" +
+            "The main structure is taking shape.";
+
+        buildButton.innerHTML =
+            "🚪 BUILD MAIN ENTRANCE";
+    }
+
+
+    /* 3 MAIN ENTRANCE */
+
+    else if(stage === 3){
+
+        addBox(
+            3,
+            4,
+            0.7,
+            0,
+            2.7,
+            -5.8,
+            0x4b2e20
+        );
+
+        addBox(
+            4.5,
+            0.4,
+            1,
+            0,
+            5,
+            -6,
+            0x0b6b3a
+        );
+
+        instruction.innerHTML =
+            "🚪 Main entrance installed.<br>" +
+            "The complex now has a clear public entrance.";
+
+        buildButton.innerHTML =
+            "🛡️ ADD RECEPTION & SECURITY";
+    }
+
+
+    /* 4 RECEPTION & SECURITY */
+
+    else if(stage === 4){
+
+        addBox(
+            5,
+            1.2,
+            2,
+            0,
+            1.2,
+            -3.5,
+            0x8b5a2b
+        );
+
+        addBox(
+            3,
+            2,
+            1.5,
+            0,
+            2.8,
+            -3.5,
+            0xeeeeee
+        );
+
+        instruction.innerHTML =
+            "🛡️ Reception and security area completed.<br>" +
+            "Visitors can now be received and monitored.";
+
+        buildButton.innerHTML =
+            "🏬 BUILD COMMERCIAL UNITS";
+    }
+
+
+    /* 5 COMMERCIAL UNITS */
+
+    else if(stage === 5){
+
+        addBox(
+            4,
+            3,
+            3,
+            -4,
+            2.8,
+            1,
+            0xf2b134
+        );
+
+        addBox(
+            4,
+            3,
+            3,
+            1,
+            2.8,
+            1,
+            0xf28c28
+        );
+
+        addBox(
+            4,
+            3,
+            3,
+            5.5,
+            2.8,
+            1,
+            0xd95f02
+        );
+
+        instruction.innerHTML =
+            "🏬 Commercial units completed.<br>" +
+            "Different businesses can operate inside.";
+
+        buildButton.innerHTML =
+            "🚚 BUILD LOADING AREA";
+    }
+
+
+    /* 6 LOADING AREA */
+
+    else if(stage === 6){
+
+        addBox(
+            6,
+            0.4,
+            4,
+            0,
+            0.65,
+            7.5,
+            0x555555
+        );
+
+        addBox(
+            4,
+            2,
+            2,
+            0,
+            1.8,
+            7.5,
+            0x999999
+        );
+
+        instruction.innerHTML =
+            "🚚 Loading area completed.<br>" +
+            "Goods can be delivered safely.";
+
+        buildButton.innerHTML =
+            "🪜 BUILD STAIRCASE";
+    }
+
+
+    /* 7 STAIRCASE */
+
+    else if(stage === 7){
+
+        for(let i = 0; i < 8; i++){
+
+            addBox(
+                3,
+                0.35,
+                0.8,
+                -5,
+                1 + i * 0.65,
+                2 + i * 0.55,
+                0x777777
+            );
+
+        }
+
+        instruction.innerHTML =
+            "🪜 Staircase completed.<br>" +
+            "The upper floor can now be accessed.";
+
+        buildButton.innerHTML =
+            "🛗 BUILD ELEVATOR SHAFT";
+    }
+
+
+    /* 8 ELEVATOR */
+
+    else if(stage === 8){
+
+        addBox(
+            2.5,
+            7,
+            2.5,
+            4.5,
+            4,
+            -1,
+            0x999999
+        );
+
+        addBox(
+            1.8,
+            3,
+            0.2,
+            4.5,
+            2.5,
+            -2.3,
+            0x222222
+        );
+
+        instruction.innerHTML =
+            "🛗 Elevator shaft completed.<br>" +
+            "Vertical transportation is provided.";
+
+        buildButton.innerHTML =
+            "🏢 BUILD UPPER FLOOR";
+    }
+
+
+    /* 9 UPPER FLOOR */
+
+    else if(stage === 9){
+
+        addBox(
+            15,
+            0.5,
+            11,
+            0,
+            7.8,
+            0,
+            0xd7d7d7
+        );
+
+        addBox(
+            15,
+            5.5,
+            0.5,
+            0,
+            10.5,
+            -5.5,
+            0xe8e8e8
+        );
+
+        addBox(
+            0.5,
+            5.5,
+            11,
+            -7.5,
+            10.5,
+            0,
+            0xe8e8e8
+        );
+
+        addBox(
+            0.5,
+            5.5,
+            11,
+            7.5,
+            10.5,
+            0,
+            0xe8e8e8
+        );
+
+        instruction.innerHTML =
+            "🏢 Upper floor completed.<br>" +
+            "The commercial complex now has additional space.";
+
+        buildButton.innerHTML =
+            "💼 BUILD OFFICES";
+    }
+
+
+    /* 10 OFFICES */
+
+    else if(stage === 10){
+
+        addBox(
+            4,
+            2.5,
+            3,
+            -4,
+            9.2,
+            1,
+            0xc9d6e8
+        );
+
+        addBox(
+            4,
+            2.5,
+            3,
+            1,
+            9.2,
+            1,
+            0xb8cbe0
+        );
+
+        addBox(
+            4,
+            2.5,
+            3,
+            5.5,
+            9.2,
+            1,
+            0xaec6cf
+        );
+
+        instruction.innerHTML =
+            "💼 Office spaces completed.<br>" +
+            "The upper level can support businesses and administration.";
+
+        buildButton.innerHTML =
+            "🚻 BUILD RESTROOMS";
+    }
+
+
+    /* 11 RESTROOMS */
+
+    else if(stage === 11){
+
+        addBox(
+            3.5,
+            2.5,
+            2.5,
+            -5,
+            9.2,
+            -2.5,
+            0xffffff
+        );
+
+        addBox(
+            3.5,
+            2.5,
+            2.5,
+            5,
+            9.2,
+            -2.5,
+            0xffffff
+        );
+
+        instruction.innerHTML =
+            "🚻 Restrooms completed.<br>" +
+            "Sanitary facilities are provided.";
+
+        buildButton.innerHTML =
+            "🚨 ADD EMERGENCY EXITS";
+    }
+
+
+    /* 12 EMERGENCY EXITS */
+
+    else if(stage === 12){
+
+        addBox(
+            2,
+            3.5,
+            0.4,
+            -6,
+            2.3,
+            -5.9,
+            0xcc2222
+        );
+
+        addBox(
+            2,
+            3.5,
+            0.4,
+            6,
+            2.3,
+            -5.9,
+            0xcc2222
+        );
+
+        instruction.innerHTML =
+            "🚨 Emergency exits installed.<br>" +
+            "Safe evacuation routes are available.";
+
+        buildButton.innerHTML =
+            "🪟 ADD WINDOWS & GLASS FACADE";
+    }
+
+
+    /* 13 WINDOWS */
+
+    else if(stage === 13){
+
+        const xs = [-5,-2,2,5];
+
+        xs.forEach(x => {
+
+            addWindow(
+                x,
+                4.2,
+                -5.8
+            );
+
+            addWindow(
+                x,
+                10.5,
+                -5.8
+            );
+
+        });
+
+        instruction.innerHTML =
+            "🪟 Windows and glass facade completed.<br>" +
+            "The building now has natural light and ventilation.";
+
+        buildButton.innerHTML =
+            "🅿️ BUILD PARKING AREA";
+    }
+
+
+    /* 14 PARKING */
+
+    else if(stage === 14){
+
+        addBox(
+            16,
+            0.2,
+            8,
+            0,
+            0.2,
+            13,
+            0x555555
+        );
+
+        for(let i = -6; i <= 6; i += 4){
+
+            addBox(
+                2.5,
+                0.05,
+                5,
+                i,
+                0.35,
+                13,
+                0xffffff
+            );
+
+        }
+
+        instruction.innerHTML =
+            "🅿️ Parking area completed.<br>" +
+            "Vehicles can be accommodated.";
+
+        buildButton.innerHTML =
+            "♿ BUILD ACCESSIBILITY RAMP";
+    }
+
+
+    /* 15 ACCESSIBILITY */
+
+    else if(stage === 15){
+
+        addBox(
+            5,
+            0.3,
+            3,
+            0,
+            0.6,
+            -7,
+            0x999999
+        );
+
+        addBox(
+            5,
+            0.3,
+            3,
+            0,
+            1,
+            -8,
+            0xaaaaaa
+        );
+
+        instruction.innerHTML =
+            "♿ Accessibility ramp completed.<br>" +
+            "The entrance is easier to access.";
+
+        buildButton.innerHTML =
+            "🏠 BUILD ROOF";
+    }
+
+
+    /* 16 ROOF */
+
+    else if(stage === 16){
+
+        addBox(
+            16,
+            0.8,
+            12,
+            0,
+            13.5,
+            0,
+            0x333333
+        );
+
+        const roof =
+            new THREE.Mesh(
+
+                new THREE.ConeGeometry(
+                    11,
+                    3,
+                    4
+                ),
+
+                new THREE.MeshStandardMaterial({
+                    color:0x444444
+                })
+
+            );
+
+        roof.rotation.y =
+            Math.PI / 4;
+
+        roof.position.set(
+            0,
+            15,
+            0
+        );
+
+        building.add(roof);
+
+        instruction.innerHTML =
+            "🏠 Roof completed.<br>" +
+            "All major construction stages are finished.";
+
+        buildButton.innerHTML =
+            "🔍 FINAL INSPECTION";
+    }
+
+
+    /* 17 FINAL INSPECTION */
+
+    else if(stage === 17){
+
+        instruction.innerHTML =
+            "🎉 LEVEL 9 COMPLETE! 🎉<br><br>" +
+
+            "✓ Deep / strong foundation<br>" +
+            "✓ Structural columns<br>" +
+            "✓ Ground floor<br>" +
+            "✓ Main entrance<br>" +
+            "✓ Reception & security<br>" +
+            "✓ Commercial units<br>" +
+            "✓ Loading area<br>" +
+            "✓ Staircase<br>" +
+            "✓ Elevator / lift shaft<br>" +
+            "✓ Upper floor<br>" +
+            "✓ Offices<br>" +
+            "✓ Restrooms<br>" +
+            "✓ Emergency exits<br>" +
+            "✓ Windows / glass facade<br>" +
+            "✓ Parking area<br>" +
+            "✓ Accessibility ramp<br>" +
+            "✓ Roof<br><br>" +
+
+            "🏢 LARGE COMMERCIAL COMPLEX APPROVED!";
+
+        buildButton.innerHTML =
+            "LEVEL 10 🔒";
+
+        buildButton.disabled =
+            true;
+
+        stage++;
+    }
+
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+buildButton.addEventListener(
+    "click",
+    buildStage
+);
+
+
+/* =========================
+   ANIMATION
+========================= */
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    if(building){
+
+        building.rotation.y +=
+            0.002;
+    }
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+animate();
+
+
+/* =========================
+   RESIZE
+========================= */
+
+window.addEventListener(
+    "resize",
+    function(){
+
+        camera.aspect =
+            window.innerWidth /
+            (window.innerHeight - 70);
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight - 70
+        );
+
+    }
+);
+
+</script>
+
+</body>
+  </html>
