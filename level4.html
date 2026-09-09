@@ -663,11 +663,16 @@ buildButton.addEventListener("click",function(){
             "✓ Roof";
 
         buildButton.innerHTML =
-            "LEVEL 5 🔒";
+    "GO TO LEVEL 5 🚀";
 
-        buildButton.disabled = true;
+stage++;
+}
 
-        stage++;
+else if(stage === 13){
+
+    window.location.href = "level5.html";
+
+            }
     }
 
 });
