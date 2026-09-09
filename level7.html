@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0">
+
+<title>Level 7 | G Build Game</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#eef7f1;
+}
+
+header{
+    height:70px;
+    background:#0b6b3a;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+    font-weight:bold;
+    position:relative;
+    z-index:10;
+}
+
+#game{
+    width:100%;
+    height:calc(100vh - 70px);
+    position:relative;
+}
+
+#info{
+    position:absolute;
+    top:12px;
+    left:50%;
+    transform:translateX(-50%);
+    width:92%;
+    max-width:500px;
+    background:rgba(255,255,255,0.94);
+    padding:12px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 3px 12px rgba(0,0,0,0.2);
+    z-index:5;
+}
+
+#levelTitle{
+    font-size:18px;
+    font-weight:bold;
+    color:#0b6b3a;
+    margin-bottom:7px;
+}
+
+#instruction{
+    font-size:14px;
+    line-height:1.4;
+}
+
+#standards{
+    margin-top:8px;
+    text-align:left;
+    font-size:12px;
+    line-height:1.5;
+}
+
+#controls{
+    position:absolute;
+    bottom:15px;
+    left:50%;
+    transform:translateX(-50%);
+    width:92%;
+    max-width:500px;
+    display:flex;
+    gap:10px;
+    z-index:10;
+}
+
+button{
+    flex:1;
+    border:none;
+    padding:14px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#backButton{
+    background:#777;
+    color:white;
+}
+
+#buildButton{
+    background:#0b6b3a;
+    color:white;
+}
+
+#buildButton:active{
+    transform:scale(0.97);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+🏗️ G BUILD GAME
+</header>
+
+<div id="game">
+
+    <div id="info">
+
+        <div id="levelTitle">
+            LEVEL 7 — 🏨 SMALL HOTEL
+        </div>
+
+        <div id="instruction">
+            Start construction with the foundation.
+        </div>
+
+        <div id="standards">
+
+            <b>🏗️ BUILDING STANDARDS</b><br>
+
+            ✓ Strong foundation<br>
+            ✓ Structural columns<br>
+            ✓ Ground floor<br>
+            ✓ Main entrance<br>
+            ✓ Reception & lobby<br>
+            ✓ Guest rooms<br>
+            ✓ Restaurant / dining area<br>
+            ✓ Staircase<br>
+            ✓ Upper floor<br>
+            ✓ Additional guest rooms<br>
+            ✓ Toilets & bathrooms<br>
+            ✓ Windows & balconies<br>
+            ✓ Accessibility ramp<br>
+            ✓ Roof
+
+        </div>
+
+    </div>
+
+    <div id="controls">
+
+        <button id="backButton">
+            ⬅️ LEVEL 6
+        </button>
+
+        <button id="buildButton">
+            BUILD FOUNDATION 🧱
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const game =
+    document.getElementById("game");
+
+const instruction =
+    document.getElementById("instruction");
+
+const buildButton =
+    document.getElementById("buildButton");
+
+const backButton =
+    document.getElementById("backButton");
+
+
+// -----------------------------
+// THREE.JS SCENE
+// -----------------------------
+
+const scene =
+    new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x9bd7ff);
+
+
+// CAMERA
+
+const camera =
+    new THREE.PerspectiveCamera(
+        55,
+        window.innerWidth /
+        (window.innerHeight - 70),
+        0.1,
+        1000
+    );
+
+camera.position.set(
+    14,
+    12,
+    18
+);
+
+camera.lookAt(
+    0,
+    3,
+    0
+);
+
+
+// RENDERER
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight - 70
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
+
+game.appendChild(renderer.domElement);
+
+
+// -----------------------------
+// LIGHT
+// -----------------------------
+
+const ambientLight =
+    new THREE.AmbientLight(
+        0xffffff,
+        0.75
+    );
+
+scene.add(ambientLight);
+
+
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
+        1
+    );
+
+sun.position.set(
+    10,
+    20,
+    10
+);
+
+scene.add(sun);
+
+
+// -----------------------------
+// GROUND
+// -----------------------------
+
+const ground =
+    new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            30,
+            0.3,
+            30
+        ),
+
+        new THREE.MeshStandardMaterial({
+            color:0x55a630
+        })
+
+    );
+
+ground.position.y = -0.15;
+
+scene.add(ground);
+
+
+// -----------------------------
+// BUILDING GROUP
+// -----------------------------
+
+const building =
+    new THREE.Group();
+
+scene.add(building);
+
+
+// -----------------------------
+// HELPER FUNCTION
+// -----------------------------
+
+function addBox(
+    width,
+    height,
+    depth,
+    x,
+    y,
+    z,
+    color
+){
+
+    const mesh =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                width,
+                height,
+                depth
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:color
+            })
+
+        );
+
+    mesh.position.set(
+        x,
+        y,
+        z
+    );
+
+    building.add(mesh);
+
+    return mesh;
+}
+
+
+// -----------------------------
+// STAGE SYSTEM
+// -----------------------------
+
+let stage = 0;
+
+
+buildButton.addEventListener(
+"click",
+function(){
+
+    // STAGE 0
+    if(stage === 0){
+
+        addBox(
+            11,
+            0.6,
+            8,
+            0,
+            0.3,
+            0,
+            0x777777
+        );
+
+        instruction.innerHTML =
+            "🧱 Foundation completed!<br>" +
+            "Next: build the structural columns.";
+
+        buildButton.innerHTML =
+            "BUILD COLUMNS 🏗️";
+
+        stage++;
+
+    }
+
+
+    // STAGE 1
+    else if(stage === 1){
+
+        const positions = [
+            [-5,2,-3.5],
+            [5,2,-3.5],
+            [-5,2,3.5],
+            [5,2,3.5]
+        ];
+
+        positions.forEach(
+            function(pos){
+
+                addBox(
+                    0.5,
+                    3.5,
+                    0.5,
+                    pos[0],
+                    pos[1],
+                    pos[2],
+                    0x777777
+                );
+
+            }
+        );
+
+        instruction.innerHTML =
+            "🏗️ Structural columns completed!<br>" +
+            "Next: construct the ground floor.";
+
+        buildButton.innerHTML =
+            "BUILD GROUND FLOOR";
+
+        stage++;
+
+    }
+
+
+    // STAGE 2
+    else if(stage === 2){
+
+        addBox(
+            10.5,
+            3,
+            7.5,
+            0,
+            2,
+            0,
+            0xd9b382
+        );
+
+        instruction.innerHTML =
+            "🏨 Ground floor completed!<br>" +
+            "Next: create the main hotel entrance.";
+
+        buildButton.innerHTML =
+            "BUILD MAIN ENTRANCE 🚪";
+
+        stage++;
+
+    }
+
+
+    // STAGE 3
+    else if(stage === 3){
+
+        addBox(
+            2,
+            2.5,
+            0.3,
+            0,
+            1.6,
+            -3.85,
+            0x4b2e20
+        );
+
+        instruction.innerHTML =
+            "🚪 Main entrance completed!<br>" +
+            "Next: build the reception and lobby.";
+
+        buildButton.innerHTML =
+            "BUILD RECEPTION 🛎️";
+
+        stage++;
+
+    }
+
+
+    // STAGE 4
+    else if(stage === 4){
+
+        addBox(
+            4,
+            0.8,
+            2,
+            -2,
+            3.7,
+            -1,
+            0x8b5a2b
+        );
+
+        addBox(
+            2.5,
+            1.8,
+            0.3,
+            -2,
+            2.3,
+            -2.1,
+            0xffffff
+        );
+
+        instruction.innerHTML =
+            "🛎️ Reception and lobby completed!<br>" +
+            "Next: build the first guest rooms.";
+
+        buildButton.innerHTML =
+            "BUILD GUEST ROOMS 🛏️";
+
+        stage++;
+
+    }
+
+
+    // STAGE 5
+    else if(stage === 5){
+
+        // Guest room blocks
+
+        addBox(
+            4,
+            2.3,
+            3,
+            -3,
+            5,
+            1.8,
+            0xc98f65
+        );
+
+        addBox(
+            4,
+            2.3,
+            3,
+            3,
+            5,
+            1.8,
+            0xc98f65
+        );
+
+        instruction.innerHTML =
+            "🛏️ Guest rooms completed!<br>" +
+            "Next: build the restaurant and dining area.";
+
+        buildButton.innerHTML =
+            "BUILD RESTAURANT 🍽️";
+
+        stage++;
+
+    }
+
+
+    // STAGE 6
+    else if(stage === 6){
+
+        addBox(
+            5,
+            2,
+            3,
+            0,
+            3.8,
+            2.7,
+            0xb87333
+        );
+
+        instruction.innerHTML =
+            "🍽️ Restaurant and dining area completed!<br>" +
+            "Next: construct the staircase.";
+
+        buildButton.innerHTML =
+            "BUILD STAIRCASE 🪜";
+
+        stage++;
+
+    }
+
+
+    // STAGE 7
+    else if(stage === 7){
+
+        for(
+            let i = 0;
+            i < 6;
+            i++
+        ){
+
+            addBox(
+                0.7,
+                0.3,
+                2.5,
+                -3 + i * 0.7,
+                4 + i * 0.3,
+                -0.5,
+                0x8b5a2b
+            );
+
+        }
+
+        instruction.innerHTML =
+            "🪜 Staircase completed!<br>" +
+            "Next: construct the upper floor.";
+
+        buildButton.innerHTML =
+            "BUILD UPPER FLOOR";
+
+        stage++;
+
+    }
+
+
+    // STAGE 8
+    else if(stage === 8){
+
+        addBox(
+            10.5,
+            0.5,
+            7.5,
+            0,
+            6.2,
+            0,
+            0x777777
+        );
+
+        instruction.innerHTML =
+            "🏢 Upper floor completed!<br>" +
+            "Next: build additional guest rooms.";
+
+        buildButton.innerHTML =
+            "BUILD UPPER ROOMS 🛏️";
+
+        stage++;
+
+    }
+
+
+    // STAGE 9
+    else if(stage === 9){
+
+        addBox(
+            4,
+            2.5,
+            3,
+            -3,
+            7.5,
+            1.5,
+            0xc98f65
+        );
+
+        addBox(
+            4,
+            2.5,
+            3,
+            3,
+            7.5,
+            1.5,
+            0xc98f65
+        );
+
+        instruction.innerHTML =
+            "🛏️ Upper guest rooms completed!<br>" +
+            "Next: add toilets and bathrooms.";
+
+        buildButton.innerHTML =
+            "BUILD BATHROOMS 🚿";
+
+        stage++;
+
+    }
+
+
+    // STAGE 10
+    else if(stage === 10){
+
+        addBox(
+            2.5,
+            2,
+            2,
+            -3.5,
+            7.5,
+            -1.5,
+            0xe8e8e8
+        );
+
+        addBox(
+            2.5,
+            2,
+            2,
+            3.5,
+            7.5,
+            -1.5,
+            0xe8e8e8
+        );
+
+        instruction.innerHTML =
+            "🚿 Toilets and bathrooms completed!<br>" +
+            "Next: install windows and balconies.";
+
+        buildButton.innerHTML =
+            "ADD WINDOWS & BALCONIES 🪟";
+
+        stage++;
+
+    }
+
+
+    // STAGE 11
+    else if(stage === 11){
+
+        // Front windows
+
+        for(
+            let i = -4;
+            i <= 4;
+            i += 2
+        ){
+
+            addBox(
+                1,
+                1,
+                0.2,
+                i,
+                4,
+                -3.9,
+                0x4da6ff
+            );
+
+            addBox(
+                1,
+                1,
+                0.2,
+                i,
+                8,
+                -3.9,
+                0x4da6ff
+            );
+
+        }
+
+        // Balcony
+
+        addBox(
+            8,
+            0.3,
+            1.5,
+            0,
+            6.8,
+            -4.3,
+            0x777777
+        );
+
+        instruction.innerHTML =
+            "🪟 Windows and balconies completed!<br>" +
+            "Next: add the accessibility ramp.";
+
+        buildButton.innerHTML =
+            "BUILD ACCESSIBILITY RAMP ♿";
+
+        stage++;
+
+    }
+
+
+    // STAGE 12
+    else if(stage === 12){
+
+        addBox(
+            3,
+            0.3,
+            2,
+            0,
+            0.5,
+            -5,
+            0x999999
+        );
+
+        addBox(
+            3,
+            0.3,
+            2,
+            0,
+            0.8,
+            -6,
+            0x999999
+        );
+
+        instruction.innerHTML =
+            "♿ Accessibility ramp completed!<br>" +
+            "Next: install the hotel roof.";
+
+        buildButton.innerHTML =
+            "BUILD ROOF 🏠";
+
+        stage++;
+
+    }
+
+
+    // STAGE 13
+    else if(stage === 13){
+
+        addBox(
+            12,
+            0.7,
+            9,
+            0,
+            9.2,
+            0,
+            0x8b4513
+        );
+
+        instruction.innerHTML =
+            "🏠 Roof completed!<br>" +
+            "Perform the final hotel inspection.";
+
+        buildButton.innerHTML =
+            "FINAL INSPECTION 🔍";
+
+        stage++;
+
+    }
+
+
+    // STAGE 14
+    else if(stage === 14){
+
+        instruction.innerHTML =
+            "🎉 LEVEL 7 COMPLETE! 🎉<br><br>" +
+
+            "✓ Foundation<br>" +
+            "✓ Structural columns<br>" +
+            "✓ Ground floor<br>" +
+            "✓ Main entrance<br>" +
+            "✓ Reception & lobby<br>" +
+            "✓ Guest rooms<br>" +
+            "✓ Restaurant / dining area<br>" +
+            "✓ Staircase<br>" +
+            "✓ Upper floor<br>" +
+            "✓ Additional guest rooms<br>" +
+            "✓ Toilets & bathrooms<br>" +
+            "✓ Windows & balconies<br>" +
+            "✓ Accessibility ramp<br>" +
+            "✓ Roof<br><br>" +
+
+            "🏨 SMALL HOTEL APPROVED!";
+
+        buildButton.innerHTML =
+            "LEVEL 8 🔒";
+
+        buildButton.disabled =
+            true;
+
+        stage++;
+
+    }
+
+});
+
+
+// -----------------------------
+// BACK BUTTON
+// -----------------------------
+
+backButton.addEventListener(
+"click",
+function(){
+
+    window.location.href =
+        "level6.html";
+
+});
+
+
+// -----------------------------
+// ANIMATION
+// -----------------------------
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    building.rotation.y += 0.002;
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+animate();
+
+
+// -----------------------------
+// RESIZE
+// -----------------------------
+
+window.addEventListener(
+"resize",
+function(){
+
+    camera.aspect =
+        window.innerWidth /
+        (window.innerHeight - 70);
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight - 70
+    );
+
+});
+
+</script>
+
+</body>
+  </html>
