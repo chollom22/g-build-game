@@ -2,190 +2,242 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>G Build Game</title>
+<title>G BUILD GAME — Level 1</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <style>
-* {
-    box-sizing: border-box;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-body {
-    margin: 0;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    background: #87ceeb;
+body{
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#87ceeb;
+    touch-action:none;
 }
 
-#game {
-    width: 100vw;
-    height: 100vh;
-    display: block;
+#game{
+    position:fixed;
+    inset:0;
 }
 
-#title {
-    position: fixed;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    background: rgba(0,0,0,.7);
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    z-index: 10;
-    white-space: nowrap;
+#top{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    background:rgba(0,0,0,.78);
+    color:white;
+    padding:10px;
+    text-align:center;
+    z-index:10;
 }
 
-#level {
-    position: fixed;
-    top: 65px;
-    left: 15px;
-    color: white;
-    background: rgba(0,0,0,.7);
-    padding: 10px;
-    border-radius: 10px;
-    z-index: 10;
+#top h1{
+    font-size:22px;
 }
 
-#instructions {
-    position: fixed;
-    bottom: 85px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 450px;
-    text-align: center;
-    color: white;
-    background: rgba(0,0,0,.7);
-    padding: 12px;
-    border-radius: 12px;
-    z-index: 10;
+#top p{
+    font-size:13px;
+    margin-top:4px;
 }
 
-#buildButton {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: none;
-    border-radius: 30px;
-    padding: 15px 30px;
-    background: #1687ff;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    z-index: 10;
+#instruction{
+    position:fixed;
+    top:72px;
+    left:50%;
+    transform:translateX(-50%);
+    width:90%;
+    max-width:500px;
+    background:white;
+    padding:10px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:bold;
+    z-index:10;
+    box-shadow:0 3px 10px rgba(0,0,0,.25);
 }
 
-#buildButton:active {
-    transform: translateX(-50%) scale(.95);
+#controls{
+    position:fixed;
+    bottom:15px;
+    left:50%;
+    transform:translateX(-50%);
+    width:95%;
+    max-width:500px;
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    z-index:20;
+}
+
+button{
+    border:none;
+    border-radius:12px;
+    padding:14px 12px;
+    font-size:15px;
+    font-weight:bold;
+    background:#087f3f;
+    color:white;
+    box-shadow:0 3px 8px rgba(0,0,0,.3);
+}
+
+button:active{
+    transform:scale(.96);
+}
+
+#buildBtn{
+    flex:1;
+}
+
+#rotateBtn{
+    background:#1565c0;
+}
+
+#resetBtn{
+    background:#b71c1c;
+}
+
+#message{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:85%;
+    max-width:400px;
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    text-align:center;
+    z-index:50;
+    display:none;
+    box-shadow:0 5px 25px rgba(0,0,0,.4);
+}
+
+#message h2{
+    margin-bottom:10px;
+}
+
+#message button{
+    margin-top:15px;
+}
+
+#stage{
+    position:fixed;
+    right:10px;
+    top:10px;
+    background:#fff;
+    color:#111;
+    padding:7px 10px;
+    border-radius:10px;
+    font-weight:bold;
+    z-index:30;
 }
 </style>
 </head>
 
 <body>
 
-<div id="title">🏗️ G BUILD GAME</div>
+<div id="game"></div>
 
-<div id="level">
-Level 1<br>
-Simple House
+<div id="top">
+    <h1>🏗️ G BUILD GAME</h1>
+    <p>LEVEL 1 — 🏠 SIMPLE HOUSE</p>
 </div>
 
-<div id="instructions">
-Build your first house.<br>
-Start by laying the foundation.
+<div id="stage">Stage 1 / 6</div>
+
+<div id="instruction">
+    Tap BUILD to place the foundation.
 </div>
 
-<button id="buildButton">
-BUILD FOUNDATION
-</button>
+<div id="controls">
+    <button id="buildBtn">🧱 BUILD</button>
+    <button id="rotateBtn">🔄 ROTATE</button>
+    <button id="resetBtn">↻ RESET</button>
+</div>
 
-<canvas id="game"></canvas>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<div id="message">
+    <h2>🎉 HOUSE COMPLETED!</h2>
+    <p>
+        Excellent work! You successfully constructed
+        the Level 1 simple house.
+    </p>
+    <button onclick="location.reload()">PLAY AGAIN</button>
+</div>
 
 <script>
 
-/* =========================
-   SCENE
-========================= */
-
 const scene = new THREE.Scene();
 
-scene.background =
-    new THREE.Color(0x87ceeb);
+scene.background = new THREE.Color(0x87ceeb);
 
 
-/* =========================
-   CAMERA
-========================= */
+/* CAMERA */
 
-const camera =
-    new THREE.PerspectiveCamera(
-        60,
-        window.innerWidth /
-        window.innerHeight,
-        0.1,
-        1000
-    );
-
-camera.position.set(
-    10,
-    8,
-    12
+const camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
 );
 
-camera.lookAt(
-    0,
-    1,
-    0
+camera.position.set(14,11,18);
+camera.lookAt(0,3,0);
+
+
+/* RENDERER */
+
+const renderer = new THREE.WebGLRenderer({
+    antialias:true
+});
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
 );
 
-
-/* =========================
-   LIGHT
-========================= */
-
-const light =
-    new THREE.DirectionalLight(
-        0xffffff,
-        2
-    );
-
-light.position.set(
-    10,
-    15,
-    10
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
 );
 
-scene.add(light);
+document.getElementById("game").appendChild(renderer.domElement);
 
-scene.add(
-    new THREE.AmbientLight(
-        0xffffff,
-        0.7
-    )
+
+/* LIGHT */
+
+const ambient = new THREE.AmbientLight(
+    0xffffff,
+    1.4
 );
 
+scene.add(ambient);
 
-/* =========================
-   GROUND
-========================= */
+const sun = new THREE.DirectionalLight(
+    0xffffff,
+    2
+);
+
+sun.position.set(10,20,10);
+
+scene.add(sun);
+
+
+/* GROUND */
 
 const groundGeometry =
-    new THREE.BoxGeometry(
-        30,
-        .3,
-        30
-    );
+    new THREE.BoxGeometry(30,.5,30);
 
 const groundMaterial =
     new THREE.MeshStandardMaterial({
-        color: 0x4caf50
+        color:0x3d9b35
     });
 
 const ground =
@@ -194,410 +246,438 @@ const ground =
         groundMaterial
     );
 
-ground.position.y = -.15;
+ground.position.y=-.25;
 
 scene.add(ground);
 
 
-/* =========================
-   BUILDING SITE
-========================= */
+/* BUILDING GROUP */
 
-const siteGeometry =
-    new THREE.BoxGeometry(
-        8,
-        .15,
-        7
-    );
+const building = new THREE.Group();
 
-const siteMaterial =
+scene.add(building);
+
+
+/* MATERIALS */
+
+const foundationMat =
     new THREE.MeshStandardMaterial({
-        color: 0xc2a679
+        color:0x777777
     });
 
-const site =
-    new THREE.Mesh(
-        siteGeometry,
-        siteMaterial
+const wallMat =
+    new THREE.MeshStandardMaterial({
+        color:0xd79b61
+    });
+
+const doorMat =
+    new THREE.MeshStandardMaterial({
+        color:0x5a321f
+    });
+
+const windowMat =
+    new THREE.MeshStandardMaterial({
+        color:0x4fc3f7,
+        metalness:.2,
+        roughness:.2
+    });
+
+const roofMat =
+    new THREE.MeshStandardMaterial({
+        color:0x8b2020
+    });
+
+
+/* BUILDING PIECES */
+
+function box(
+    width,
+    height,
+    depth,
+    material,
+    x,
+    y,
+    z
+){
+
+    const geometry =
+        new THREE.BoxGeometry(
+            width,
+            height,
+            depth
+        );
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    mesh.position.set(x,y,z);
+
+    mesh.visible=false;
+
+    building.add(mesh);
+
+    return mesh;
+}
+
+
+/* FOUNDATION */
+
+const foundation =
+    box(
+        8,
+        .6,
+        6,
+        foundationMat,
+        0,
+        .3,
+        0
     );
 
-site.position.y = .08;
 
-scene.add(site);
+/* WALLS */
 
-
-/* =========================
-   BUILDING PARTS
-========================= */
-
-let foundation = null;
-let walls = [];
-let door = null;
-let windows = [];
-let roof = null;
-
-
-/* =========================
-   BUTTON
-========================= */
-
-const buildButton =
-    document.getElementById(
-        "buildButton"
+const backWall =
+    box(
+        8,
+        4,
+        .4,
+        wallMat,
+        0,
+        2.3,
+        -2.8
     );
 
-const instructions =
-    document.getElementById(
-        "instructions"
+const frontWall =
+    box(
+        8,
+        4,
+        .4,
+        wallMat,
+        0,
+        2.3,
+        2.8
+    );
+
+const leftWall =
+    box(
+        .4,
+        4,
+        5.2,
+        wallMat,
+        -3.8,
+        2.3,
+        0
+    );
+
+const rightWall =
+    box(
+        .4,
+        4,
+        5.2,
+        wallMat,
+        3.8,
+        2.3,
+        0
     );
 
 
-/* =========================
-   BUILDING STAGE
-========================= */
+/* DOOR */
 
-let stage = 0;
+const door =
+    box(
+        1.4,
+        2.5,
+        .15,
+        doorMat,
+        0,
+        1.55,
+        2.55
+    );
 
 
-/* =========================
-   BUILD FUNCTION
-========================= */
+/* WINDOWS */
 
-buildButton.addEventListener(
+const window1 =
+    box(
+        1.5,
+        1.3,
+        .12,
+        windowMat,
+        -2.2,
+        2.3,
+        2.55
+    );
+
+const window2 =
+    box(
+        1.5,
+        1.3,
+        .12,
+        windowMat,
+        2.2,
+        2.3,
+        2.55
+    );
+
+
+/* ROOF */
+
+const roof =
+    box(
+        9,
+        .5,
+        7,
+        roofMat,
+        0,
+        4.55,
+        0
+    );
+
+
+/* STAGES */
+
+const stages = [
+
+    {
+        text:
+        "Foundation required. Tap BUILD to place it.",
+        piece:foundation
+    },
+
+    {
+        text:
+        "Now construct the four walls.",
+        pieces:[
+            backWall,
+            frontWall,
+            leftWall,
+            rightWall
+        ]
+    },
+
+    {
+        text:
+        "Place the main entrance door.",
+        piece:door
+    },
+
+    {
+        text:
+        "Place the two front windows.",
+        pieces:[
+            window1,
+            window2
+        ]
+    },
+
+    {
+        text:
+        "Place the roof.",
+        piece:roof
+    },
+
+    {
+        text:
+        "Final inspection of the house.",
+        final:true
+    }
+
+];
+
+
+let currentStage = 0;
+
+let rotation = 0;
+
+let started = false;
+
+
+/* UI */
+
+const buildBtn =
+    document.getElementById("buildBtn");
+
+const rotateBtn =
+    document.getElementById("rotateBtn");
+
+const resetBtn =
+    document.getElementById("resetBtn");
+
+const instruction =
+    document.getElementById("instruction");
+
+const stageDisplay =
+    document.getElementById("stage");
+
+const message =
+    document.getElementById("message");
+
+
+/* UPDATE UI */
+
+function updateUI(){
+
+    stageDisplay.textContent =
+        "Stage " +
+        (currentStage + 1) +
+        " / " +
+        stages.length;
+
+    instruction.textContent =
+        stages[currentStage].text;
+
+}
+
+
+/* START / BUILD */
+
+buildBtn.addEventListener(
     "click",
-    function() {
+    function(){
 
-        /* FOUNDATION */
+        started=true;
 
-        if(stage === 0) {
+        const stage =
+            stages[currentStage];
 
-            const geometry =
-                new THREE.BoxGeometry(
-                    6,
-                    .5,
-                    5
-                );
 
-            const material =
-                new THREE.MeshStandardMaterial({
-                    color: 0x777777
-                });
+        if(stage.piece){
 
-            foundation =
-                new THREE.Mesh(
-                    geometry,
-                    material
-                );
-
-            foundation.position.y =
-                .4;
-
-            scene.add(
-                foundation
-            );
-
-            stage = 1;
-
-            buildButton.innerText =
-                "BUILD WALLS";
-
-            instructions.innerHTML =
-                "Excellent! 🧱<br>" +
-                "Foundation completed.<br>" +
-                "Now build the four walls.";
+            stage.piece.visible=true;
 
         }
 
 
-        /* WALLS */
+        if(stage.pieces){
 
-        else if(stage === 1) {
-
-            const wallMaterial =
-                new THREE.MeshStandardMaterial({
-                    color: 0xd9a066
-                });
-
-
-            // BACK WALL
-
-            const backWall =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        6,
-                        3,
-                        .3
-                    ),
-                    wallMaterial
-                );
-
-            backWall.position.set(
-                0,
-                2.15,
-                -2.35
+            stage.pieces.forEach(
+                piece=>{
+                    piece.visible=true;
+                }
             );
-
-            scene.add(backWall);
-
-
-            // FRONT WALL
-
-            const frontWall =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        6,
-                        3,
-                        .3
-                    ),
-                    wallMaterial
-                );
-
-            frontWall.position.set(
-                0,
-                2.15,
-                2.35
-            );
-
-            scene.add(frontWall);
-
-
-            // LEFT WALL
-
-            const leftWall =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        .3,
-                        3,
-                        4.7
-                    ),
-                    wallMaterial
-                );
-
-            leftWall.position.set(
-                -2.85,
-                2.15,
-                0
-            );
-
-            scene.add(leftWall);
-
-
-            // RIGHT WALL
-
-            const rightWall =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        .3,
-                        3,
-                        4.7
-                    ),
-                    wallMaterial
-                );
-
-            rightWall.position.set(
-                2.85,
-                2.15,
-                0
-            );
-
-            scene.add(rightWall);
-
-            walls.push(
-                backWall,
-                frontWall,
-                leftWall,
-                rightWall
-            );
-
-
-            stage = 2;
-
-            buildButton.innerText =
-                "BUILD DOOR";
-
-            instructions.innerHTML =
-                "Walls completed! 🧱<br>" +
-                "The structure is standing.<br>" +
-                "Next: install the door.";
 
         }
 
 
-        /* DOOR */
+        if(stage.final){
 
-        else if(stage === 2) {
+            checkBuilding();
 
-            const doorGeometry =
-                new THREE.BoxGeometry(
-                    1.2,
-                    2.2,
-                    .15
-                );
-
-            const doorMaterial =
-                new THREE.MeshStandardMaterial({
-                    color: 0x5a3218
-                });
-
-            door =
-                new THREE.Mesh(
-                    doorGeometry,
-                    doorMaterial
-                );
-
-            door.position.set(
-                0,
-                1.45,
-                2.5
-            );
-
-            scene.add(door);
-
-
-            stage = 3;
-
-            buildButton.innerText =
-                "BUILD WINDOWS";
-
-            instructions.innerHTML =
-                "Door installed! 🚪<br>" +
-                "Next: install the windows.";
+            return;
 
         }
 
 
-        /* WINDOWS */
-
-        else if(stage === 3) {
-
-            const windowMaterial =
-                new THREE.MeshStandardMaterial({
-                    color: 0x42a5f5
-                });
+        currentStage++;
 
 
-            const leftWindow =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        1.2,
-                        1.2,
-                        .12
-                    ),
-                    windowMaterial
-                );
+        if(currentStage >= stages.length){
 
-            leftWindow.position.set(
-                -1.7,
-                2.3,
-                2.5
-            );
+            checkBuilding();
 
-            scene.add(
-                leftWindow
-            );
-
-
-            const rightWindow =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        1.2,
-                        1.2,
-                        .12
-                    ),
-                    windowMaterial
-                );
-
-            rightWindow.position.set(
-                1.7,
-                2.3,
-                2.5
-            );
-
-            scene.add(
-                rightWindow
-            );
-
-
-            windows.push(
-                leftWindow,
-                rightWindow
-            );
-
-
-            stage = 4;
-
-            buildButton.innerText =
-                "BUILD ROOF";
-
-            instructions.innerHTML =
-                "Windows installed! 🪟<br>" +
-                "The house is almost complete.<br>" +
-                "Next: build the roof.";
+            return;
 
         }
 
 
-        /* ROOF */
-
-        else if(stage === 4) {
-
-            const roofGeometry =
-                new THREE.ConeGeometry(
-                    4.5,
-                    2.5,
-                    4
-                );
-
-            const roofMaterial =
-                new THREE.MeshStandardMaterial({
-                    color: 0xb52b2b
-                });
-
-            roof =
-                new THREE.Mesh(
-                    roofGeometry,
-                    roofMaterial
-                );
-
-            roof.rotation.y =
-                Math.PI / 4;
-
-            roof.position.y =
-                4.9;
-
-            scene.add(roof);
-
-
-            stage = 5;
-
-            buildButton.innerHTML = 
-                "GO TO LEVEL 2 🚀";
-
-            instructions.innerHTML =
-                "🎉 HOUSE COMPLETED! 🎉<br>" +
-                "Foundation ✓<br>" +
-                "Walls ✓ Door ✓ Windows ✓ Roof ✓";
-
-        }
-
-
-        /* COMPLETE */
-
-        else if(stage === 5) {
-    window.location.href = "level2.html";
-        }
+        updateUI();
 
     }
 );
 
 
-/* =========================
-   RESIZE
-========================= */
+/* ROTATE */
+
+rotateBtn.addEventListener(
+    "click",
+    function(){
+
+        rotation += Math.PI / 8;
+
+        building.rotation.y =
+            rotation;
+
+    }
+);
+
+
+/* RESET */
+
+resetBtn.addEventListener(
+    "click",
+    function(){
+
+        location.reload();
+
+    }
+);
+
+
+/* FINAL CHECK */
+
+function checkBuilding(){
+
+    const requiredPieces = [
+
+        foundation,
+        backWall,
+        frontWall,
+        leftWall,
+        rightWall,
+        door,
+        window1,
+        window2,
+        roof
+
+    ];
+
+
+    const completed =
+        requiredPieces.every(
+            piece => piece.visible
+        );
+
+
+    if(completed){
+
+        message.style.display="block";
+
+        instruction.textContent =
+            "✅ All building standards have been met.";
+
+        buildBtn.disabled=true;
+
+    }
+
+}
+
+
+/* ANIMATION */
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+animate();
+
+
+/* RESIZE */
 
 window.addEventListener(
     "resize",
-    function() {
+    function(){
 
         camera.aspect =
             window.innerWidth /
@@ -614,49 +694,7 @@ window.addEventListener(
 );
 
 
-/* =========================
-   RENDERER
-========================= */
-
-const renderer =
-    new THREE.WebGLRenderer({
-        canvas:
-            document.getElementById(
-                "game"
-            ),
-        antialias: true
-    });
-
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
-
-renderer.setPixelRatio(
-    Math.min(
-        window.devicePixelRatio,
-        2
-    )
-);
-
-
-/* =========================
-   ANIMATION
-========================= */
-
-function animate() {
-
-    requestAnimationFrame(
-        animate
-    );
-
-    renderer.render(
-        scene,
-        camera
-    );
-}
-
-animate();
+updateUI();
 
 </script>
 
