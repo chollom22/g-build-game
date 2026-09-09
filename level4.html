@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>G Build Game - Level 4</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#87ceeb;
+}
+
+#ui{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:10;
+    text-align:center;
+    color:white;
+    background:rgba(0,0,0,.65);
+    padding:10px;
+}
+
+h1{
+    margin:4px 0;
+    font-size:22px;
+}
+
+#level{
+    font-weight:bold;
+    margin:5px;
+}
+
+#instruction{
+    font-size:15px;
+    line-height:1.4;
+    margin:5px auto;
+    max-width:700px;
+}
+
+button{
+    border:0;
+    border-radius:10px;
+    padding:12px 18px;
+    margin:5px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#buildButton{
+    background:#0b6b3a;
+    color:white;
+}
+
+#backButton{
+    background:#555;
+    color:white;
+}
+
+canvas{
+    display:block;
+}
+
+@media(max-width:600px){
+    h1{
+        font-size:18px;
+    }
+
+    #instruction{
+        font-size:13px;
+    }
+
+    button{
+        padding:10px 13px;
+        font-size:13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+
+    <h1>🏗️ G BUILD GAME</h1>
+
+    <div id="level">
+        LEVEL 4 — SMALL HEALTH CENTRE
+    </div>
+
+    <div id="instruction">
+        Build the foundation first.
+    </div>
+
+    <button id="backButton">
+        ⬅️ LEVEL 3
+    </button>
+
+    <button id="buildButton">
+        BUILD FOUNDATION
+    </button>
+
+</div>
+
+<script>
+
+const scene = new THREE.Scene();
+
+scene.background = new THREE.Color(0x87ceeb);
+
+
+const camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
+
+camera.position.set(14,11,16);
+
+
+const renderer = new THREE.WebGLRenderer({
+    antialias:true
+});
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
+
+document.body.appendChild(renderer.domElement);
+
+
+// LIGHTS
+
+const ambientLight =
+    new THREE.AmbientLight(0xffffff,0.7);
+
+scene.add(ambientLight);
+
+
+const sun =
+    new THREE.DirectionalLight(0xffffff,1);
+
+sun.position.set(10,20,10);
+
+scene.add(sun);
+
+
+// GROUND
+
+const ground =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(30,0.3,25),
+        new THREE.MeshStandardMaterial({
+            color:0x3b9d23
+        })
+    );
+
+ground.position.y=-0.15;
+
+scene.add(ground);
+
+
+// BUILDING GROUP
+
+const building =
+    new THREE.Group();
+
+scene.add(building);
+
+
+// MATERIALS
+
+const foundationMat =
+    new THREE.MeshStandardMaterial({
+        color:0x777777
+    });
+
+const wallMat =
+    new THREE.MeshStandardMaterial({
+        color:0xe8e0c8
+    });
+
+const columnMat =
+    new THREE.MeshStandardMaterial({
+        color:0xb0b0b0
+    });
+
+const roofMat =
+    new THREE.MeshStandardMaterial({
+        color:0x8b2f2f
+    });
+
+const doorMat =
+    new THREE.MeshStandardMaterial({
+        color:0x5b3518
+    });
+
+const windowMat =
+    new THREE.MeshStandardMaterial({
+        color:0x55bde8
+    });
+
+const roomMat =
+    new THREE.MeshStandardMaterial({
+        color:0xd6d6d6
+    });
+
+
+// HELPER
+
+function addBox(
+    width,
+    height,
+    depth,
+    x,
+    y,
+    z,
+    material
+){
+
+    const box =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                width,
+                height,
+                depth
+            ),
+            material
+        );
+
+    box.position.set(x,y,z);
+
+    building.add(box);
+
+    return box;
+}
+
+
+// STAGE
+
+let stage = 0;
+
+
+const instruction =
+    document.getElementById("instruction");
+
+const buildButton =
+    document.getElementById("buildButton");
+
+const backButton =
+    document.getElementById("backButton");
+
+
+// BUILD FUNCTION
+
+buildButton.addEventListener("click",function(){
+
+    // 1 FOUNDATION
+
+    if(stage === 0){
+
+        addBox(
+            11,
+            0.7,
+            8,
+            0,
+            0.35,
+            0,
+            foundationMat
+        );
+
+        instruction.innerHTML =
+            "Foundation complete.<br>" +
+            "Now build the structural columns.";
+
+        buildButton.innerHTML =
+            "BUILD COLUMNS";
+
+        stage++;
+    }
+
+
+    // 2 COLUMNS
+
+    else if(stage === 1){
+
+        const positions = [
+
+            [-5,2,-3.5],
+            [5,2,-3.5],
+            [-5,2,3.5],
+            [5,2,3.5],
+
+            [0,2,-3.5],
+            [0,2,3.5]
+
+        ];
+
+        positions.forEach(function(pos){
+
+            addBox(
+                0.5,
+                3.3,
+                0.5,
+                pos[0],
+                pos[1],
+                pos[2],
+                columnMat
+            );
+
+        });
+
+        instruction.innerHTML =
+            "Structural columns complete.<br>" +
+            "Now construct the external walls.";
+
+        buildButton.innerHTML =
+            "BUILD WALLS";
+
+        stage++;
+    }
+
+
+    // 3 WALLS
+
+    else if(stage === 2){
+
+        // FRONT
+
+        addBox(
+            11,
+            3.3,
+            0.4,
+            0,
+            2,
+            -3.8,
+            wallMat
+        );
+
+        // BACK
+
+        addBox(
+            11,
+            3.3,
+            0.4,
+            0,
+            2,
+            3.8,
+            wallMat
+        );
+
+        // LEFT
+
+        addBox(
+            0.4,
+            3.3,
+            8,
+            -5.3,
+            2,
+            0,
+            wallMat
+        );
+
+        // RIGHT
+
+        addBox(
+            0.4,
+            3.3,
+            8,
+            5.3,
+            2,
+            0,
+            wallMat
+        );
+
+        instruction.innerHTML =
+            "External walls complete.<br>" +
+            "Create the main entrance.";
+
+        buildButton.innerHTML =
+            "BUILD MAIN ENTRANCE";
+
+        stage++;
+    }
+
+
+    // 4 MAIN ENTRANCE
+
+    else if(stage === 3){
+
+        addBox(
+            1.5,
+            2.5,
+            0.25,
+            0,
+            1.5,
+            -4.05,
+            doorMat
+        );
+
+        instruction.innerHTML =
+            "Main entrance installed.<br>" +
+            "Build the reception area.";
+
+        buildButton.innerHTML =
+            "BUILD RECEPTION";
+
+        stage++;
+    }
+
+
+    // 5 RECEPTION
+
+    else if(stage === 4){
+
+        addBox(
+            3,
+            1,
+            0.8,
+            -2.8,
+            0.8,
+            -1.8,
+            roomMat
+        );
+
+        instruction.innerHTML =
+            "Reception completed.<br>" +
+            "Now create the waiting area.";
+
+        buildButton.innerHTML =
+            "BUILD WAITING AREA";
+
+        stage++;
+    }
+
+
+    // 6 WAITING AREA
+
+    else if(stage === 5){
+
+        addBox(
+            3.5,
+            0.5,
+            2,
+            2.3,
+            0.4,
+            -1.5,
+            roomMat
+        );
+
+        instruction.innerHTML =
+            "Waiting area completed.<br>" +
+            "Now build the consultation room.";
+
+        buildButton.innerHTML =
+            "BUILD CONSULTATION ROOM";
+
+        stage++;
+    }
+
+
+    // 7 CONSULTATION ROOM
+
+    else if(stage === 6){
+
+        addBox(
+            0.3,
+            3,
+            3,
+            1,
+            1.8,
+            1.3,
+            roomMat
+        );
+
+        instruction.innerHTML =
+            "Consultation room completed.<br>" +
+            "Now build the treatment room.";
+
+        buildButton.innerHTML =
+            "BUILD TREATMENT ROOM";
+
+        stage++;
+    }
+
+
+    // 8 TREATMENT ROOM
+
+    else if(stage === 7){
+
+        addBox(
+            3,
+            0.7,
+            2,
+            -2.5,
+            0.5,
+            1.5,
+            roomMat
+        );
+
+        instruction.innerHTML =
+            "Treatment room completed.<br>" +
+            "Now add the toilet.";
+
+        buildButton.innerHTML =
+            "BUILD TOILET";
+
+        stage++;
+    }
+
+
+    // 9 TOILET
+
+    else if(stage === 8){
+
+        addBox(
+            2,
+            2.5,
+            2,
+            3.3,
+            1.3,
+            2.5,
+            wallMat
+        );
+
+        instruction.innerHTML =
+            "Toilet completed.<br>" +
+            "Now install the windows.";
+
+        buildButton.innerHTML =
+            "INSTALL WINDOWS";
+
+        stage++;
+    }
+
+
+    // 10 WINDOWS
+
+    else if(stage === 9){
+
+        const windows = [
+
+            [-3.5,2,-4.05],
+            [3.5,2,-4.05],
+            [-5.55,2,-1],
+            [-5.55,2,2],
+            [5.55,2,-1],
+            [5.55,2,1]
+
+        ];
+
+        windows.forEach(function(pos){
+
+            addBox(
+                1.5,
+                1.2,
+                0.15,
+                pos[0],
+                pos[1],
+                pos[2],
+                windowMat
+            );
+
+        });
+
+        instruction.innerHTML =
+            "Windows installed.<br>" +
+            "Now build an accessibility ramp.";
+
+        buildButton.innerHTML =
+            "BUILD ACCESS RAMP";
+
+        stage++;
+    }
+
+
+    // 11 RAMP
+
+    else if(stage === 10){
+
+        addBox(
+            3,
+            0.35,
+            2.5,
+            0,
+            0.2,
+            -5.2,
+            foundationMat
+        );
+
+        instruction.innerHTML =
+            "Accessibility ramp completed.<br>" +
+            "The building is ready for roofing.";
+
+        buildButton.innerHTML =
+            "BUILD ROOF";
+
+        stage++;
+    }
+
+
+    // 12 ROOF
+
+    else if(stage === 11){
+
+        addBox(
+            11.6,
+            0.6,
+            8.6,
+            0,
+            3.9,
+            0,
+            roofMat
+        );
+
+        instruction.innerHTML =
+            "Roof completed.<br><br>" +
+            "Now inspect the health centre.";
+
+        buildButton.innerHTML =
+            "FINAL INSPECTION";
+
+        stage++;
+    }
+
+
+    // 13 FINAL INSPECTION
+
+    else if(stage === 12){
+
+        instruction.innerHTML =
+            "🎉 LEVEL 4 COMPLETE! 🎉<br><br>" +
+
+            "✓ Foundation<br>" +
+            "✓ Structural columns<br>" +
+            "✓ External walls<br>" +
+            "✓ Main entrance<br>" +
+            "✓ Reception<br>" +
+            "✓ Waiting area<br>" +
+            "✓ Consultation room<br>" +
+            "✓ Treatment room<br>" +
+            "✓ Toilet<br>" +
+            "✓ Windows<br>" +
+            "✓ Accessibility ramp<br>" +
+            "✓ Roof";
+
+        buildButton.innerHTML =
+            "LEVEL 5 🔒";
+
+        buildButton.disabled = true;
+
+        stage++;
+    }
+
+});
+
+
+// BACK BUTTON
+
+backButton.addEventListener("click",function(){
+
+    window.location.href =
+        "level3.html";
+
+});
+
+
+// CAMERA / TOUCH ROTATION
+
+let dragging = false;
+let previousX = 0;
+
+renderer.domElement.addEventListener(
+    "pointerdown",
+    function(event){
+
+        dragging = true;
+        previousX = event.clientX;
+
+    }
+);
+
+renderer.domElement.addEventListener(
+    "pointerup",
+    function(){
+
+        dragging = false;
+
+    }
+);
+
+renderer.domElement.addEventListener(
+    "pointermove",
+    function(event){
+
+        if(!dragging) return;
+
+        const difference =
+            event.clientX - previousX;
+
+        building.rotation.y +=
+            difference * 0.01;
+
+        previousX =
+            event.clientX;
+
+    }
+);
+
+
+// RESIZE
+
+window.addEventListener(
+    "resize",
+    function(){
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
+
+
+// ANIMATION
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
