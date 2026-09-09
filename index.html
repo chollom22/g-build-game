@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>G Build Game</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #87ceeb;
+}
+
+#game {
+    width: 100vw;
+    height: 100vh;
+    display: block;
+}
+
+#title {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    background: rgba(0,0,0,.65);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+#level {
+    position: fixed;
+    top: 65px;
+    left: 15px;
+    color: white;
+    background: rgba(0,0,0,.65);
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 10;
+}
+
+#instructions {
+    position: fixed;
+    bottom: 85px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    color: white;
+    background: rgba(0,0,0,.65);
+    padding: 12px;
+    border-radius: 12px;
+    z-index: 10;
+}
+
+#buildButton {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+    background: #1687ff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+#buildButton:active {
+    transform: translateX(-50%) scale(.95);
+}
+</style>
+</head>
+
+<body>
+
+<div id="title">🏗️ G BUILD GAME</div>
+
+<div id="level">
+Level 1<br>
+Simple House
+</div>
+
+<div id="instructions">
+Build your first house.<br>
+Start by laying the foundation.
+</div>
+
+<button id="buildButton">
+BUILD FOUNDATION
+</button>
+
+<canvas id="game"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+const scene = new THREE.Scene();
+
+scene.background = new THREE.Color(0x87ceeb);
+
+
+// CAMERA
+const camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
+
+camera.position.set(10, 8, 12);
+camera.lookAt(0, 1, 0);
+
+
+// LIGHT
+const light = new THREE.DirectionalLight(
+    0xffffff,
+    2
+);
+
+light.position.set(10, 15, 10);
+scene.add(light);
+
+scene.add(
+    new THREE.AmbientLight(
+        0xffffff,
+        0.7
+    )
+);
+
+
+// GROUND
+const groundGeometry =
+    new THREE.BoxGeometry(30, .3, 30);
+
+const groundMaterial =
+    new THREE.MeshStandardMaterial({
+        color: 0x4caf50
+    });
+
+const ground =
+    new THREE.Mesh(
+        groundGeometry,
+        groundMaterial
+    );
+
+ground.position.y = -.15;
+
+scene.add(ground);
+
+
+// BUILDING SITE
+const siteGeometry =
+    new THREE.BoxGeometry(8, .15, 7);
+
+const siteMaterial =
+    new THREE.MeshStandardMaterial({
+        color: 0xc2a679
+    });
+
+const site =
+    new THREE.Mesh(
+        siteGeometry,
+        siteMaterial
+    );
+
+site.position.y = .08;
+
+scene.add(site);
+
+
+// FOUNDATION
+let foundation = null;
+
+const buildButton =
+    document.getElementById("buildButton");
+
+const instructions =
+    document.getElementById("instructions");
+
+
+buildButton.addEventListener(
+    "click",
+    function() {
+
+        if (foundation === null) {
+
+            const geometry =
+                new THREE.BoxGeometry(
+                    6,
+                    .5,
+                    5
+                );
+
+            const material =
+                new THREE.MeshStandardMaterial({
+                    color: 0x777777
+                });
+
+            foundation =
+                new THREE.Mesh(
+                    geometry,
+                    material
+                );
+
+            foundation.position.y =
+                .4;
+
+            scene.add(foundation);
+
+
+            buildButton.innerText =
+                "FOUNDATION COMPLETE";
+
+            instructions.innerHTML =
+                "Excellent! 🧱<br>" +
+                "Foundation completed.<br>" +
+                "Next: build the walls.";
+
+        }
+
+    }
+);
+
+
+// RESIZE
+window.addEventListener(
+    "resize",
+    function() {
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
+
+
+// RENDERER
+const renderer =
+    new THREE.WebGLRenderer({
+        canvas:
+            document.getElementById("game"),
+        antialias: true
+    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+
+// ANIMATION
+function animate() {
+
+    requestAnimationFrame(
+        animate
+    );
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
