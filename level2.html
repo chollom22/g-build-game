@@ -539,23 +539,21 @@ function buildNext(){
     // INSPECTION
     else if(stage === 8){
 
-        instruction.innerHTML =
-            "🎉 LEVEL 2 COMPLETE! 🎉<br><br>" +
-            "✓ Foundation<br>" +
-            "✓ Ground floor<br>" +
-            "✓ Door<br>" +
-            "✓ Windows<br>" +
-            "✓ Staircase<br>" +
-            "✓ First floor<br>" +
-            "✓ First-floor windows<br>" +
-            "✓ Roof";
+    instruction.innerHTML =
+        "🎉 LEVEL 2 COMPLETE! 🎉<br><br>" +
+        "✓ Foundation<br>" +
+        "✓ Ground floor<br>" +
+        "✓ Door<br>" +
+        "✓ Windows<br>" +
+        "✓ Staircase<br>" +
+        "✓ First floor<br>" +
+        "✓ First-floor windows<br>" +
+        "✓ Roof";
 
-        button.innerHTML =
-            "LEVEL 3 🔒";
+    button.innerHTML =
+        "GO TO LEVEL 3 🚀";
 
-        button.disabled = true;
-
-        stage++;
+    stage++;
     }
 
 }
