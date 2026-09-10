@@ -2,14 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>G BUILD GAME — Level 1</title>
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no">
+
+<title>G BUILD GAME - Level 1</title>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <style>
+
 *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
@@ -19,7 +24,7 @@ body{
     margin:0;
     overflow:hidden;
     font-family:Arial,sans-serif;
-    background:#111;
+    background:#87ceeb;
     touch-action:none;
 }
 
@@ -28,206 +33,117 @@ body{
     inset:0;
 }
 
-canvas{
-    display:block;
-}
-
 #topbar{
     position:fixed;
     top:0;
     left:0;
     right:0;
-    height:64px;
-    background:rgba(8,70,45,.95);
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:8px 12px;
     z-index:20;
-    box-shadow:0 2px 10px #0006;
-}
-
-.title{
-    font-size:18px;
+    background:#0b6b3a;
+    color:white;
+    padding:10px;
+    text-align:center;
     font-weight:bold;
 }
 
-.subtitle{
-    font-size:11px;
-    opacity:.8;
-    margin-top:3px;
+#topbar h2{
+    margin:0;
+    font-size:20px;
 }
 
 #progressBox{
-    position:fixed;
-    top:75px;
-    left:10px;
-    right:10px;
-    z-index:15;
-    background:rgba(255,255,255,.94);
-    border-radius:12px;
-    padding:10px;
-    box-shadow:0 3px 12px #0004;
-}
-
-#progressText{
-    font-weight:bold;
-    font-size:13px;
-    margin-bottom:6px;
-}
-
-#bar{
-    height:9px;
-    background:#ddd;
+    margin-top:7px;
+    height:12px;
+    background:#ffffff55;
     border-radius:10px;
     overflow:hidden;
 }
 
-#barFill{
-    height:100%;
+#progress{
     width:0%;
-    background:#159447;
+    height:100%;
+    background:#ffd700;
     transition:.3s;
 }
 
-#instruction{
-    position:fixed;
-    left:10px;
-    right:10px;
-    bottom:145px;
-    z-index:15;
-    background:rgba(0,0,0,.78);
-    color:white;
-    border-radius:12px;
-    padding:10px;
-    text-align:center;
-    font-size:13px;
+#progressText{
+    font-size:12px;
+    margin-top:3px;
 }
 
 #tools{
     position:fixed;
-    bottom:10px;
-    left:8px;
-    right:8px;
     z-index:20;
+    bottom:10px;
+    left:50%;
+    transform:translateX(-50%);
+    width:96%;
+    max-width:700px;
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:7px;
+    gap:6px;
 }
 
 .tool{
     border:0;
-    border-radius:12px;
-    min-height:55px;
+    border-radius:10px;
+    padding:10px 4px;
     background:white;
-    color:#123;
     font-weight:bold;
     font-size:12px;
-    box-shadow:0 3px 10px #0005;
-}
-
-.tool.active{
-    background:#087f4f;
-    color:white;
+    box-shadow:0 2px 6px #0005;
 }
 
 .tool:active{
-    transform:scale(.95);
+    transform:scale(.94);
 }
 
-#materialPanel{
-    position:fixed;
-    bottom:78px;
-    left:8px;
-    right:8px;
-    z-index:25;
-    display:none;
-    background:rgba(255,255,255,.97);
-    border-radius:15px;
-    padding:10px;
-    box-shadow:0 4px 20px #0006;
-}
-
-#materialPanel.show{
-    display:block;
-}
-
-.panelTitle{
-    font-weight:bold;
-    margin-bottom:8px;
-}
-
-.materials{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:7px;
-}
-
-.material{
-    padding:10px 4px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    background:#fafafa;
-    font-size:11px;
-    font-weight:bold;
+.tool.active{
+    background:#0b6b3a;
+    color:white;
 }
 
 #message{
     position:fixed;
-    top:50%;
+    z-index:25;
+    top:95px;
     left:50%;
-    transform:translate(-50%,-50%);
-    z-index:50;
-    width:88%;
-    max-width:400px;
-    display:none;
-    background:white;
-    border-radius:18px;
-    padding:22px;
-    text-align:center;
-    box-shadow:0 8px 35px #0008;
-}
-
-#message h2{
-    margin-top:0;
-}
-
-#message button{
-    border:0;
-    background:#087f4f;
+    transform:translateX(-50%);
+    background:#000b;
     color:white;
-    padding:13px 25px;
-    border-radius:10px;
-    font-weight:bold;
-    margin-top:10px;
+    padding:10px 15px;
+    border-radius:20px;
+    font-size:14px;
+    text-align:center;
+    max-width:90%;
 }
 
-#testList{
-    text-align:left;
-    font-size:13px;
-    line-height:1.8;
-}
-
-.bad{
-    color:#c62828;
-}
-
-.good{
-    color:#16823c;
-}
-
-#rotateInfo{
+#reset{
     position:fixed;
     right:10px;
-    top:140px;
-    z-index:15;
-    color:white;
-    background:#0008;
-    padding:7px 10px;
+    top:10px;
+    z-index:30;
+    border:0;
     border-radius:8px;
-    font-size:10px;
+    padding:7px 10px;
+    background:#d9534f;
+    color:white;
+    font-weight:bold;
 }
+
+@media(max-width:500px){
+
+    #tools{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .tool{
+        padding:9px 2px;
+        font-size:11px;
+    }
+
+}
+
 </style>
 </head>
 
@@ -236,1360 +152,697 @@ canvas{
 <div id="game"></div>
 
 <div id="topbar">
+
+    <h2>🏗️ G BUILD GAME</h2>
+
     <div>
-        <div class="title">🏗️ G BUILD GAME</div>
-        <div class="subtitle">Level 1 — Simple House Construction</div>
+        LEVEL 1 — SIMPLE HOUSE
     </div>
-    <button class="tool" onclick="resetGame()">↻ RESET</button>
-</div>
 
-<div id="progressBox">
-    <div id="progressText">Stage 1: Foundation</div>
-    <div id="bar">
-        <div id="barFill"></div>
+    <div id="progressBox">
+        <div id="progress"></div>
     </div>
-</div>
 
-<div id="rotateInfo">
-    Drag screen = rotate • Pinch = zoom
-</div>
-
-<div id="instruction">
-    Select a construction tool below.
-</div>
-
-<div id="materialPanel">
-    <div class="panelTitle">Choose Construction Material</div>
-
-    <div class="materials">
-        <button class="material" onclick="selectMaterial('block')">🧱 Block</button>
-        <button class="material" onclick="selectMaterial('door')">🚪 Door</button>
-        <button class="material" onclick="selectMaterial('window')">🪟 Window</button>
-        <button class="material" onclick="selectMaterial('tile')">◻️ Tile</button>
+    <div id="progressText">
+        0% Complete
     </div>
+
+</div>
+
+<button id="reset"
+        onclick="location.reload()">
+    RESET
+</button>
+
+<div id="message">
+    Select a construction tool to begin.
 </div>
 
 <div id="tools">
 
-    <button class="tool" onclick="chooseTool('foundation')">
-        🧱<br>Foundation
+    <button class="tool"
+            data-tool="foundation">
+        🧱 Foundation
     </button>
 
-    <button class="tool" onclick="chooseTool('block')">
-        🧱<br>Lay Blocks
+    <button class="tool"
+            data-tool="blocks">
+        🧱 Lay Blocks
     </button>
 
-    <button class="tool" onclick="chooseTool('door')">
-        🚪<br>Door
+    <button class="tool"
+            data-tool="door">
+        🚪 Door
     </button>
 
-    <button class="tool" onclick="chooseTool('window')">
-        🪟<br>Window
+    <button class="tool"
+            data-tool="window">
+        🪟 Window
     </button>
 
-    <button class="tool" onclick="chooseTool('roof')">
-        🏠<br>Roof
+    <button class="tool"
+            data-tool="roof">
+        🏠 Roof
     </button>
 
-    <button class="tool" onclick="chooseTool('plaster')">
-        🧱<br>Plaster
+    <button class="tool"
+            data-tool="plaster">
+        🧱 Plaster
     </button>
 
-    <button class="tool" onclick="chooseTool('ceiling')">
-        💡<br>Ceiling
+    <button class="tool"
+            data-tool="ceiling">
+        Ceiling
     </button>
 
-    <button class="tool" onclick="chooseTool('tile')">
-        ◻️<br>Tile
+    <button class="tool"
+            data-tool="tile">
+        Tile Floor
     </button>
 
-    <button class="tool" onclick="chooseTool('electrical')">
-        ⚡<br>Electrical
+    <button class="tool"
+            data-tool="electrical">
+        ⚡ Electrical
     </button>
 
-    <button class="tool" onclick="chooseTool('light')">
-        💡<br>Lighting
+    <button class="tool"
+            data-tool="lighting">
+        💡 Lighting
     </button>
 
-    <button class="tool" onclick="inspectHouse()">
-        🔍<br>Inspect
-    </button>
-
-    <button class="tool" onclick="toggleMaterials()">
-        🧰<br>Materials
+    <button class="tool"
+            data-tool="inspect">
+        🔍 Inspect
     </button>
 
 </div>
-
-<div id="message">
-    <h2 id="messageTitle"></h2>
-    <div id="messageBody"></div>
-    <button onclick="closeMessage()">CONTINUE</button>
-</div>
-
 
 <script>
 
-/* =========================================================
-   G BUILD GAME
-   LEVEL 1 CONSTRUCTION ENGINE
-   ========================================================= */
+const scene =
+    new THREE.Scene();
 
-let scene;
-let camera;
-let renderer;
-let house;
-let ground;
-
-let currentTool = "foundation";
-let selectedMaterial = "block";
-
-let stage = 0;
-
-let foundationBlocks = [];
-let wallBlocks = [];
-let plasterAreas = [];
-let ceilingPieces = [];
-let tiles = [];
-let lights = [];
-
-let doorPlaced = false;
-let windowsPlaced = 0;
-let roofBuilt = false;
-let electricalDone = false;
-
-let targetFoundation = 16;
-let targetBlocks = 48;
-let targetPlaster = 24;
-let targetCeiling = 12;
-let targetTiles = 36;
-let targetLights = 3;
-
-let placedFoundation = 0;
-let placedBlocks = 0;
-let plastered = 0;
-let ceilingDone = 0;
-let tiled = 0;
-let lightsDone = 0;
-
-let raycaster = new THREE.Raycaster();
-let pointer = new THREE.Vector2();
-
-let dragging = false;
-let lastX = 0;
-let lastY = 0;
-
-let cameraDistance = 22;
-let cameraAngle = Math.PI / 4;
-let cameraHeight = 10;
+scene.background =
+    new THREE.Color(0x87ceeb);
 
 
-/* =========================================================
-   INIT
-   ========================================================= */
+/* CAMERA */
 
-function init(){
-
-    scene = new THREE.Scene();
-
-    scene.background = new THREE.Color(0x87ceeb);
-
-    scene.fog = new THREE.Fog(0x87ceeb,35,70);
-
-
-    camera = new THREE.PerspectiveCamera(
+const camera =
+    new THREE.PerspectiveCamera(
         55,
-        window.innerWidth/window.innerHeight,
-        .1,
+        window.innerWidth /
+        window.innerHeight,
+        0.1,
         1000
     );
 
-    updateCamera();
+camera.position.set(
+    9,
+    7,
+    10
+);
 
 
-    renderer = new THREE.WebGLRenderer({
+/* RENDERER */
+
+const renderer =
+    new THREE.WebGLRenderer({
         antialias:true
     });
 
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
 
-    renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio,2)
-    );
+renderer.setPixelRatio(
+    Math.min(
+        window.devicePixelRatio,
+        2
+    )
+);
 
-    renderer.shadowMap.enabled = true;
-
-    document.getElementById("game").appendChild(
-        renderer.domElement
-    );
+document
+    .getElementById("game")
+    .appendChild(renderer.domElement);
 
 
-    /* LIGHTING */
+/* LIGHT */
 
-    const skyLight = new THREE.HemisphereLight(
+const ambient =
+    new THREE.AmbientLight(
         0xffffff,
-        0x557755,
+        1.5
+    );
+
+scene.add(ambient);
+
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
         2
     );
 
-    scene.add(skyLight);
+sun.position.set(
+    10,
+    15,
+    10
+);
+
+scene.add(sun);
 
 
-    const sun = new THREE.DirectionalLight(
-        0xffffff,
-        3
+/* GROUND */
+
+const ground =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            30,
+            0.2,
+            30
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x55aa55
+        })
     );
 
-    sun.position.set(10,20,10);
-    sun.castShadow = true;
+ground.position.y = -0.1;
 
-    sun.shadow.mapSize.width = 2048;
-    sun.shadow.mapSize.height = 2048;
+scene.add(ground);
 
-    scene.add(sun);
 
+/* VARIABLES */
 
-    /* GROUND */
+let currentTool = "";
 
-    const groundGeometry =
-        new THREE.PlaneGeometry(80,80);
+let foundationBuilt = false;
+let doorBuilt = false;
+let windowBuilt = false;
+let roofBuilt = false;
+let plasterBuilt = false;
+let ceilingBuilt = false;
+let tilesBuilt = false;
+let electricalBuilt = false;
+let lightingBuilt = false;
 
-    const groundMaterial =
-        new THREE.MeshStandardMaterial({
-            color:0x5b9e45
-        });
+let wallBlocks = [];
 
-    ground =
-        new THREE.Mesh(
-            groundGeometry,
-            groundMaterial
-        );
+let wallRows = 0;
 
-    ground.rotation.x = -Math.PI/2;
+let foundationBlocks = [];
 
-    ground.receiveShadow = true;
 
-    scene.add(ground);
+/* HOUSE GROUP */
 
+const house =
+    new THREE.Group();
 
-    createConstructionSite();
+scene.add(house);
 
-    createHouseBase();
 
-    setupTouchControls();
+/* MESSAGE */
 
-    updateUI();
-
-    animate();
-}
-
-
-/* =========================================================
-   CONSTRUCTION SITE
-   ========================================================= */
-
-function createConstructionSite(){
-
-    const siteGeometry =
-        new THREE.BoxGeometry(18,.08,14);
-
-    const siteMaterial =
-        new THREE.MeshStandardMaterial({
-            color:0xc5a66a
-        });
-
-    const site =
-        new THREE.Mesh(
-            siteGeometry,
-            siteMaterial
-        );
-
-    site.position.y=.02;
-
-    site.receiveShadow=true;
-
-    scene.add(site);
-
-
-    /* BUILDING GRID */
-
-    const lineMaterial =
-        new THREE.LineBasicMaterial({
-            color:0x444444,
-            transparent:true,
-            opacity:.35
-        });
-
-    for(let x=-7;x<=7;x+=1){
-
-        const points=[
-            new THREE.Vector3(x,.08,-5),
-            new THREE.Vector3(x,.08,5)
-        ];
-
-        const geometry =
-            new THREE.BufferGeometry()
-            .setFromPoints(points);
-
-        scene.add(
-            new THREE.Line(
-                geometry,
-                lineMaterial
-            )
-        );
-    }
-
-    for(let z=-5;z<=5;z+=1){
-
-        const points=[
-            new THREE.Vector3(-7,.08,z),
-            new THREE.Vector3(7,.08,z)
-        ];
-
-        const geometry =
-            new THREE.BufferGeometry()
-            .setFromPoints(points);
-
-        scene.add(
-            new THREE.Line(
-                geometry,
-                lineMaterial
-            )
-        );
-    }
-}
-
-
-/* =========================================================
-   HOUSE BASE
-   ========================================================= */
-
-function createHouseBase(){
-
-    house = new THREE.Group();
-
-    scene.add(house);
-
-    /* Floor */
-
-    const floorGeometry =
-        new THREE.BoxGeometry(8,.15,6);
-
-    const floorMaterial =
-        new THREE.MeshStandardMaterial({
-            color:0x9b7653
-        });
-
-    const floor =
-        new THREE.Mesh(
-            floorGeometry,
-            floorMaterial
-        );
-
-    floor.position.y=.12;
-    floor.receiveShadow=true;
-
-    house.add(floor);
-}
-
-
-/* =========================================================
-   TOOL SELECTION
-   ========================================================= */
-
-function chooseTool(tool){
-
-    currentTool=tool;
-
-    document.querySelectorAll(".tool")
-        .forEach(b=>b.classList.remove("active"));
-
-    event.currentTarget.classList.add("active");
-
-    const instructions={
-
-        foundation:
-        "Tap the construction area to place foundation blocks.",
-
-        block:
-        "Lay blocks one by one. Build the walls row by row.",
-
-        door:
-        "Tap the wall where you want to install the main door.",
-
-        window:
-        "Tap the wall where you want to install a window.",
-
-        roof:
-        "Build the roof after the walls, door and windows are complete.",
-
-        plaster:
-        "Tap wall sections to plaster them.",
-
-        ceiling:
-        "Tap the ceiling area to install ceiling sections.",
-
-        tile:
-        "Tap floor spaces to lay tiles.",
-
-        electrical:
-        "Install electrical points before installing lights.",
-
-        light:
-        "Tap ceiling locations to install lights.",
-
-    };
-
-    document.getElementById("instruction")
-        .textContent =
-        instructions[tool] ||
-        "Select a construction tool.";
-}
-
-
-/* =========================================================
-   MATERIALS
-   ========================================================= */
-
-function toggleMaterials(){
+function showMessage(text){
 
     document
-        .getElementById("materialPanel")
-        .classList.toggle("show");
+        .getElementById("message")
+        .textContent = text;
+
 }
-
-
-function selectMaterial(material){
-
-    selectedMaterial=material;
-
-    document
-        .getElementById("materialPanel")
-        .classList.remove("show");
-
-    chooseTool(material);
-}
-
-
-/* =========================================================
+      /* =========================
    FOUNDATION
-   ========================================================= */
+========================= */
 
-function placeFoundation(){
+function buildFoundation(){
 
-    if(placedFoundation>=targetFoundation){
-
-        showMessage(
-            "FOUNDATION COMPLETE",
-            "The foundation has been completed. Continue to blockwork."
-        );
-
+    if(foundationBuilt){
+        showMessage("Foundation already built.");
         return;
     }
-
-
-    const index=placedFoundation;
-
-    const side=Math.floor(index/4);
-    const position=index%4;
-
-    let x=0;
-    let z=0;
-
-    if(side===0){
-
-        x=-3+position*2;
-        z=-2.8;
-
-    }else if(side===1){
-
-        x=-3+position*2;
-        z=2.8;
-
-    }else if(side===2){
-
-        x=-3.8;
-        z=-1.8+position*1.2;
-
-    }else{
-
-        x=3.8;
-        z=-1.8+position*1.2;
-    }
-
-
-    const geometry =
-        new THREE.BoxGeometry(2,.35,1);
 
     const material =
         new THREE.MeshStandardMaterial({
             color:0x777777
         });
 
-    const block =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
+    for(let x=-2.5; x<=2.5; x+=0.5){
 
-    block.position.set(
-        x,
-        .35,
-        z
-    );
+        for(let z=-1.5; z<=1.5; z+=0.5){
 
-    block.castShadow=true;
-
-    house.add(block);
-
-    foundationBlocks.push(block);
-
-    placedFoundation++;
-
-    if(placedFoundation===targetFoundation){
-
-        stage=1;
-
-        showMessage(
-            "FOUNDATION COMPLETE",
-            "Excellent. The foundation is ready for blockwork."
-        );
-    }
-
-    updateUI();
-}
-
-
-/* =========================================================
-   BLOCK LAYING
-   ========================================================= */
-
-function placeBlock(){
-
-    if(placedFoundation<targetFoundation){
-
-        showMessage(
-            "BUILDING STANDARD",
-            "Complete the foundation before laying wall blocks."
-        );
-
-        return;
-    }
-
-
-    if(placedBlocks>=targetBlocks){
-
-        showMessage(
-            "BLOCKWORK COMPLETE",
-            "All required wall blocks have been laid."
-        );
-
-        return;
-    }
-
-
-    const row=
-        Math.floor(placedBlocks/12);
-
-    const pos=
-        placedBlocks%12;
-
-
-    let x,z;
-
-    /*
-       Four walls.
-       Each row contains 12 blocks.
-    */
-
-    const wall=Math.floor(pos/3);
-    const p=pos%3;
-
-    if(wall===0){
-
-        x=-2+p*2;
-        z=-3;
-
-    }else if(wall===1){
-
-        x=2;
-        z=-2+p*2;
-
-    }else if(wall===2){
-
-        x=2-p*2;
-        z=3;
-
-    }else{
-
-        x=-2;
-        z=2-p*2;
-    }
-
-
-    /*
-       More realistic visible blockwork:
-       each row rises.
-    */
-
-    const y=
-        .75+
-        row*.55;
-
-
-    const geometry =
-        new THREE.BoxGeometry(
-            wall===0||wall===2 ? 1.9:.55,
-            .5,
-            wall===0||wall===2 ? .55:1.9
-        );
-
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color:0xc87542
-        });
-
-
-    const block =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-
-    block.position.set(
-        x,
-        y,
-        z
-    );
-
-
-    block.castShadow=true;
-
-    house.add(block);
-
-    wallBlocks.push(block);
-
-    placedBlocks++;
-
-
-    if(placedBlocks===targetBlocks){
-
-        stage=2;
-
-        showMessage(
-            "BLOCKWORK COMPLETE",
-            "The wall structure is complete. Now install the door and windows."
-        );
-    }
-
-    updateUI();
-}
-
-
-/* =========================================================
-   DOOR
-   ========================================================= */
-
-function placeDoor(){
-
-    if(placedBlocks<targetBlocks){
-
-        showMessage(
-            "DOOR",
-            "Complete the blockwork before installing the door."
-        );
-
-        return;
-    }
-
-
-    if(doorPlaced){
-
-        showMessage(
-            "DOOR ALREADY INSTALLED",
-            "The main door has already been installed."
-        );
-
-        return;
-    }
-
-
-    const geometry =
-        new THREE.BoxGeometry(
-            1.4,
-            2.6,
-            .18
-        );
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color:0x57351f
-        });
-
-    const door =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    /*
-       Main door on front wall.
-    */
-
-    door.position.set(
-        0,
-        1.5,
-        -3.08
-    );
-
-    door.castShadow=true;
-
-    house.add(door);
-
-    doorPlaced=true;
-
-    showMessage(
-        "DOOR INSTALLED",
-        "Main entrance installed. You can later expand the system to allow complete free door positioning."
-    );
-
-    updateUI();
-}
-
-
-/* =========================================================
-   WINDOWS
-   ========================================================= */
-
-function placeWindow(){
-
-    if(!doorPlaced){
-
-        showMessage(
-            "WINDOW",
-            "Install the main door before installing windows."
-        );
-
-        return;
-    }
-
-
-    if(windowsPlaced>=4){
-
-        showMessage(
-            "WINDOWS COMPLETE",
-            "The required windows have been installed."
-        );
-
-        return;
-    }
-
-
-    const positions=[
-        [-2,1.7,-3.08],
-        [2,1.7,-3.08],
-        [-4.08,1.7,0],
-        [4.08,1.7,0]
-    ];
-
-    const p=
-        positions[windowsPlaced];
-
-
-    const frame =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                .1,
-                1.4,
-                1.5
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0xffffff
-            })
-        );
-
-
-    frame.position.set(
-        p[0],
-        p[1],
-        p[2]
-    );
-
-
-    if(Math.abs(p[0])>4){
-
-        frame.rotation.y=Math.PI/2;
-    }
-
-    house.add(frame);
-
-
-    const glass =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                .08,
-                1.15,
-                1.2
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x55aadd,
-                transparent:true,
-                opacity:.65
-            })
-        );
-
-
-    glass.position.copy(frame.position);
-
-    if(Math.abs(p[0])>4){
-
-        glass.rotation.y=Math.PI/2;
-    }
-
-    house.add(glass);
-
-
-    windowsPlaced++;
-
-
-    if(windowsPlaced===4){
-
-        stage=3;
-
-        showMessage(
-            "WINDOWS COMPLETE",
-            "Doors and windows are installed. The building is ready for roofing."
-        );
-    }
-
-    updateUI();
-}
-
-
-/* =========================================================
-   ROOF
-   ========================================================= */
-
-function buildRoof(){
-
-    if(windowsPlaced<4){
-
-        showMessage(
-            "ROOFING TEST",
-            "Complete the required doors and windows before roofing."
-        );
-
-        return;
-    }
-
-
-    if(roofBuilt){
-
-        showMessage(
-            "ROOF COMPLETE",
-            "The roof has already been constructed."
-        );
-
-        return;
-    }
-
-
-    /*
-       Two sloped roof sections
-    */
-
-    const roofMaterial =
-        new THREE.MeshStandardMaterial({
-            color:0x8d3b2f
-        });
-
-
-    const leftRoof =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                9,
-                .25,
-                3.7
-            ),
-            roofMaterial
-        );
-
-
-    leftRoof.position.set(
-        0,
-        5.2,
-        -1.45
-    );
-
-    leftRoof.rotation.x=-.35;
-
-    leftRoof.castShadow=true;
-
-    house.add(leftRoof);
-
-
-    const rightRoof =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                9,
-                .25,
-                3.7
-            ),
-            roofMaterial
-        );
-
-
-    rightRoof.position.set(
-        0,
-        5.2,
-        1.45
-    );
-
-    rightRoof.rotation.x=.35;
-      scene.add(rightRoof);
-
-
-/* =========================
-   ROOF SUPPORT
-========================= */
-
-const roofSupport = new THREE.Mesh(
-    new THREE.BoxGeometry(5.8, 0.25, 0.25),
-    new THREE.MeshStandardMaterial({
-        color: 0x8b5a2b
-    })
-);
-
-roofSupport.position.set(
-    0,
-    4.35,
-    0
-);
-
-scene.add(roofSupport);
-
-
-/* =========================
-   PLASTER
-========================= */
-
-function addPlaster(){
-
-    const plasterMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0xf1e6d0
-        });
-
-    const frontPlaster =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(5.8, 3.8, 0.08),
-            plasterMaterial
-        );
-
-    frontPlaster.position.set(
-        0,
-        2.35,
-        -1.54
-    );
-
-    scene.add(frontPlaster);
-
-
-    const backPlaster =
-        frontPlaster.clone();
-
-    backPlaster.position.z = 1.54;
-
-    scene.add(backPlaster);
-
-
-    const leftPlaster =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                0.08,
-                3.8,
-                3
-            ),
-            plasterMaterial
-        );
-
-    leftPlaster.position.set(
-        -2.9,
-        2.35,
-        0
-    );
-
-    scene.add(leftPlaster);
-
-
-    const rightPlaster =
-        leftPlaster.clone();
-
-    rightPlaster.position.x = 2.9;
-
-    scene.add(rightPlaster);
-}
-
-
-/* =========================
-   CEILING
-========================= */
-
-function addCeiling(){
-
-    const ceilingMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0xffffff
-        });
-
-    const ceiling =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                5.7,
-                0.15,
-                3
-            ),
-            ceilingMaterial
-        );
-
-    ceiling.position.set(
-        0,
-        4.15,
-        0
-    );
-
-    scene.add(ceiling);
-}
-
-
-/* =========================
-   FLOOR TILES
-========================= */
-
-function addTiles(){
-
-    const tileMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0xd9d9d9
-        });
-
-    for(
-        let x = -2.5;
-        x <= 2.5;
-        x += 0.5
-    ){
-
-        for(
-            let z = -1.2;
-            z <= 1.2;
-            z += 0.5
-        ){
-
-            const tile =
+            const block =
                 new THREE.Mesh(
                     new THREE.BoxGeometry(
-                        0.45,
-                        0.05,
-                        0.45
+                        0.48,
+                        0.25,
+                        0.48
                     ),
-                    tileMaterial
+                    material
                 );
 
-            tile.position.set(
+            block.position.set(
                 x,
-                0.18,
+                0.15,
                 z
             );
 
-            scene.add(tile);
+            house.add(block);
+
+            foundationBlocks.push(block);
         }
     }
-}
 
+    foundationBuilt = true;
 
-/* =========================
-   ELECTRICAL SYSTEM
-========================= */
-
-function addElectrical(){
-
-    const wireMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x222222
-        });
-
-    const wire =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                5,
-                0.05,
-                0.05
-            ),
-            wireMaterial
-        );
-
-    wire.position.set(
-        0,
-        3.7,
-        -1.58
+    showMessage(
+        "✅ Foundation completed. Select Lay Blocks."
     );
-
-    scene.add(wire);
-
-
-    const switchBox =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                0.2,
-                0.3,
-                0.08
-            ),
-            new THREE.MeshStandardMaterial({
-                color: 0xffffff
-            })
-        );
-
-    switchBox.position.set(
-        -2,
-        1.5,
-        -1.62
-    );
-
-    scene.add(switchBox);
-}
-
-
-/* =========================
-   LIGHTING
-========================= */
-
-function addLighting(){
-
-    const lamp =
-        new THREE.PointLight(
-            0xffffff,
-            2,
-            10
-        );
-
-    lamp.position.set(
-        0,
-        3.8,
-        0
-    );
-
-    scene.add(lamp);
-
-
-    const bulb =
-        new THREE.Mesh(
-            new THREE.SphereGeometry(
-                0.12,
-                16,
-                16
-            ),
-            new THREE.MeshStandardMaterial({
-                color: 0xffffaa,
-                emissive: 0xffff55
-            })
-        );
-
-    bulb.position.copy(
-        lamp.position
-    );
-
-    scene.add(bulb);
-}
-
-
-/* =========================
-   INSPECTION
-========================= */
-
-function inspectBuilding(){
-
-    let score = 0;
-
-    if(wallBlocks.length > 0)
-        score++;
-
-    if(doorBuilt)
-        score++;
-
-    if(windowBuilt)
-        score++;
-
-    if(roofBuilt)
-        score++;
-
-    if(plasterBuilt)
-        score++;
-
-    if(ceilingBuilt)
-        score++;
-
-    if(tilesBuilt)
-        score++;
-
-    if(electricalBuilt)
-        score++;
-
-    if(lightingBuilt)
-        score++;
-
-
-    if(score >= 9){
-
-        alert(
-            "✅ INSPECTION PASSED!\n\n" +
-            "🏠 House construction meets the required standards."
-        );
-
-    }else{
-
-        alert(
-            "❌ INSPECTION FAILED!\n\n" +
-            "Complete all construction requirements before inspection."
-        );
-
-    }
-}
-
-
-/* =========================
-   TOOL ACTIONS
-========================= */
-
-function useTool(tool){
-
-    currentTool = tool;
-
-    document
-        .querySelectorAll(".tool")
-        .forEach(button =>
-            button.classList.remove("active")
-        );
-
-    const selected =
-        document.querySelector(
-            `[data-tool="${tool}"]`
-        );
-
-    if(selected)
-        selected.classList.add("active");
-
-    if(tool === "plaster"){
-
-        addPlaster();
-        plasterBuilt = true;
-
-    }
-
-    if(tool === "ceiling"){
-
-        addCeiling();
-        ceilingBuilt = true;
-
-    }
-
-    if(tool === "tile"){
-
-        addTiles();
-        tilesBuilt = true;
-
-    }
-
-    if(tool === "electrical"){
-
-        addElectrical();
-        electricalBuilt = true;
-
-    }
-
-    if(tool === "lighting"){
-
-        addLighting();
-        lightingBuilt = true;
-
-    }
-
-    if(tool === "inspect"){
-
-        inspectBuilding();
-
-    }
 
     updateProgress();
 }
 
 
 /* =========================
-   PROGRESS
+   BRICK MATERIAL
 ========================= */
 
-function updateProgress(){
+const brickMaterial =
+    new THREE.MeshStandardMaterial({
+        color:0xb85c38
+    });
 
-    let completed = 0;
 
-    if(wallBlocks.length > 0)
-        completed++;
+/* =========================
+   LAY ONE BRICK
+========================= */
 
-    if(doorBuilt)
-        completed++;
+function layBrick(){
 
-    if(windowBuilt)
-        completed++;
+    if(!foundationBuilt){
 
-    if(roofBuilt)
-        completed++;
-
-    if(plasterBuilt)
-        completed++;
-
-    if(ceilingBuilt)
-        completed++;
-
-    if(tilesBuilt)
-        completed++;
-
-    if(electricalBuilt)
-        completed++;
-
-    if(lightingBuilt)
-        completed++;
-
-    const percent =
-        Math.round(
-            completed / 9 * 100
+        showMessage(
+            "⚠️ Build the foundation first."
         );
 
-    const progress =
-        document.getElementById(
-            "progress"
+        return;
+    }
+
+    if(wallRows >= 7){
+
+        showMessage(
+            "🏠 Walls completed. Add the door and windows."
         );
 
-    if(progress)
-        progress.style.width =
-            percent + "%";
+        return;
+    }
 
-    const progressText =
-        document.getElementById(
-            "progressText"
+
+    const brick =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                0.48,
+                0.38,
+                0.22
+            ),
+            brickMaterial
         );
 
-    if(progressText)
-        progressText.textContent =
-            percent + "% Complete";
+
+    /*
+       FRONT WALL
+    */
+
+    const x =
+        -2.5 +
+        (wallBlocks.length % 11) *
+        0.5;
+
+    const row =
+        Math.floor(
+            wallBlocks.length / 11
+        );
+
+
+    brick.position.set(
+        x,
+        0.45 + row * 0.4,
+        -1.5
+    );
+
+
+    house.add(brick);
+
+    wallBlocks.push(brick);
+
+
+    /*
+       BACK WALL
+    */
+
+    const backBrick =
+        brick.clone();
+
+    backBrick.position.z =
+        1.5;
+
+    house.add(backBrick);
+
+
+    /*
+       SIDE WALLS
+    */
+
+    if(
+        wallBlocks.length % 11 === 0
+    ){
+
+        for(let z=-1; z<=1; z+=0.5){
+
+            const left =
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        0.22,
+                        0.38,
+                        0.48
+                    ),
+                    brickMaterial
+                );
+
+            left.position.set(
+                -2.5,
+                0.45 + row * 0.4,
+                z
+            );
+
+            house.add(left);
+
+
+            const right =
+                left.clone();
+
+            right.position.x =
+                2.5;
+
+            house.add(right);
+        }
+
+        wallRows++;
+    }
+
+
+    showMessage(
+        "🧱 Brick placed! Keep tapping Lay Blocks."
+    );
+
+    updateProgress();
 }
 
 
 /* =========================
-   BUTTON EVENTS
+   DOOR
+========================= */
+
+function buildDoor(){
+
+    if(!foundationBuilt){
+
+        showMessage(
+            "Build the foundation first."
+        );
+
+        return;
+    }
+
+    if(wallRows < 7){
+
+        showMessage(
+            "Finish the brick walls first."
+        );
+
+        return;
+    }
+
+    if(doorBuilt){
+
+        showMessage(
+            "Door already installed."
+        );
+
+        return;
+    }
+
+
+    const frame =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                1.0,
+                2.1,
+                0.18
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x5b351d
+            })
+        );
+
+
+    frame.position.set(
+        0,
+        1.3,
+        -1.62
+    );
+
+    house.add(frame);
+
+
+    doorBuilt = true;
+
+    showMessage(
+        "🚪 Door installed successfully."
+    );
+
+    updateProgress();
+}
+
+
+/* =========================
+   WINDOW
+========================= */
+
+function buildWindow(){
+
+    if(!doorBuilt){
+
+        showMessage(
+            "Install the door first."
+        );
+
+        return;
+    }
+
+    if(windowBuilt){
+
+        showMessage(
+            "Windows already installed."
+        );
+
+        return;
+    }
+
+
+    const glassMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0x66ccff,
+            transparent:true,
+            opacity:0.7
+        });
+
+
+    const leftWindow =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                1.0,
+                1.0,
+                0.12
+            ),
+            glassMaterial
+        );
+
+
+    leftWindow.position.set(
+        -1.7,
+        2.0,
+        -1.62
+    );
+
+    house.add(leftWindow);
+
+
+    const rightWindow =
+        leftWindow.clone();
+
+    rightWindow.position.x =
+        1.7;
+
+    house.add(rightWindow);
+
+
+    windowBuilt = true;
+
+    showMessage(
+        "🪟 Windows installed."
+    );
+
+    updateProgress();
+}
+
+
+/* =========================
+   ROOF
+========================= */
+
+function buildRoof(){
+
+    if(!windowBuilt){
+
+        showMessage(
+            "Install the windows first."
+        );
+
+        return;
+    }
+
+    if(roofBuilt){
+
+        showMessage(
+            "Roof already constructed."
+        );
+
+        return;
+    }
+
+
+    const roofMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0x8b4513
+        });
+
+
+    const roofLeft =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                3.2,
+                0.25,
+                3.6
+            ),
+            roofMaterial
+        );
+
+
+    roofLeft.position.set(
+        -1.45,
+        3.55,
+        0
+    );
+
+    roofLeft.rotation.z =
+        -0.35;
+
+    house.add(roofLeft);
+
+
+    const roofRight =
+        roofLeft.clone();
+
+    roofRight.position.x =
+        1.45;
+
+    roofRight.rotation.z =
+        0.35;
+
+    house.add(roofRight);
+
+
+    roofBuilt = true;
+
+    showMessage(
+        "🏠 Roof completed. Continue with plaster."
+    );
+
+    updateProgress();
+}
+
+
+/* =========================
+   PLASTER
+========================= */
+
+function buildPlaster(){
+
+    if(!roofBuilt){
+
+        showMessage(
+            "Construct the roof first."
+        );
+
+        return;
+    }
+
+    if(plasterBuilt){
+
+        showMessage(
+            "Plaster already completed."
+        );
+
+        return;
+    }
+
+
+    const plaster =
+        new THREE.MeshStandardMaterial({
+            color:0xf0e6d2
+        });
+
+
+    const front =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                5.2,
+                2.7,
+                0.08
+            ),
+            plaster
+        );
+
+    front.position.set(
+        0,
+        1.8,
+        -1.57
+    );
+
+    house.add(front);
+
+
+    const back =
+        front.clone();
+
+    back.position.z =
+        1.57;
+
+    house.add(back);
+
+
+    plasterBuilt = true;
+
+    showMessage(
+        "🧱 Plastering completed."
+    );
+
+    updateProgress();
+}
+
+
+/* =========================
+   TOOL SELECTION
 ========================= */
 
 document
@@ -1600,118 +853,541 @@ document
             "click",
             function(){
 
-                useTool(
-                    this.dataset.tool
-                );
+                const tool =
+                    this.dataset.tool;
+
+                document
+                    .querySelectorAll(".tool")
+                    .forEach(b =>
+                        b.classList.remove(
+                            "active"
+                        )
+                    );
+
+                this.classList.add("active");
+
+
+                if(tool === "foundation")
+                    buildFoundation();
+
+                if(tool === "blocks")
+                    layBrick();
+
+                if(tool === "door")
+                    buildDoor();
+
+                if(tool === "window")
+                    buildWindow();
+
+                if(tool === "roof")
+                    buildRoof();
+
+                if(tool === "plaster")
+                    buildPlaster();
 
             }
         );
 
     });
+              /* CEILING */
+
+        function buildCeiling(){
+
+            if(wallRows < 7){
+
+                showMessage(
+                    "⚠️ Complete the walls first."
+                );
+
+                return;
+
+            }
+
+            if(ceilingBuilt){
+
+                showMessage(
+                    "Ceiling already completed."
+                );
+
+                return;
+
+            }
+
+            const ceilingMaterial =
+                new THREE.MeshStandardMaterial({
+                    color: 0xf1f1f1
+                });
+
+            const ceiling =
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        5.8,
+                        0.18,
+                        4.6
+                    ),
+                    ceilingMaterial
+                );
+
+            ceiling.position.set(
+                0,
+                3.65,
+                0
+            );
+
+            scene.add(ceiling);
+
+            ceilingBuilt = true;
+
+            showMessage(
+                "✅ Ceiling completed."
+            );
+
+            updateProgress();
+
+        }
 
 
-/* =========================
-   RESET
-========================= */
+        /* FLOOR TILES */
 
-function resetGame(){
+        function buildTiles(){
 
-    location.reload();
+            if(!ceilingBuilt){
 
-}
+                showMessage(
+                    "⚠️ Complete the ceiling first."
+                );
 
+                return;
 
-/* =========================
-   CAMERA TOUCH CONTROL
-========================= */
+            }
 
-let dragging = false;
-let previousX = 0;
+            if(tilesBuilt){
 
-renderer.domElement.addEventListener(
-    "pointerdown",
-    function(event){
+                showMessage(
+                    "Floor tiles already completed."
+                );
 
-        dragging = true;
-        previousX = event.clientX;
+                return;
 
-    }
-);
+            }
 
-renderer.domElement.addEventListener(
-    "pointerup",
-    function(){
+            const tileMaterial =
+                new THREE.MeshStandardMaterial({
+                    color: 0xd8d8d8
+                });
 
-        dragging = false;
+            for(
+                let x = -2.5;
+                x <= 2.5;
+                x += 0.5
+            ){
 
-    }
-);
+                for(
+                    let z = -2;
+                    z <= 2;
+                    z += 0.5
+                ){
 
-renderer.domElement.addEventListener(
-    "pointermove",
-    function(event){
+                    const tile =
+                        new THREE.Mesh(
+                            new THREE.BoxGeometry(
+                                0.46,
+                                0.04,
+                                0.46
+                            ),
+                            tileMaterial
+                        );
 
-        if(!dragging)
-            return;
+                    tile.position.set(
+                        x,
+                        0.08,
+                        z
+                    );
 
-        const movement =
-            event.clientX - previousX;
+                    scene.add(tile);
 
-        scene.rotation.y +=
-            movement * 0.01;
+                }
 
-        previousX =
-            event.clientX;
+            }
 
-    }
-);
+            tilesBuilt = true;
 
+            showMessage(
+                "✅ Floor tiles completed."
+            );
 
-/* =========================
-   ANIMATION
-========================= */
+            updateProgress();
 
-function animate(){
-
-    requestAnimationFrame(
-        animate
-    );
-
-    renderer.render(
-        scene,
-        camera
-    );
-
-}
-
-animate();
+        }
 
 
-/* =========================
-   RESIZE
-========================= */
+        /* ELECTRICAL SYSTEM */
 
-window.addEventListener(
-    "resize",
-    function(){
+        function buildElectrical(){
 
-        camera.aspect =
-            window.innerWidth /
-            window.innerHeight;
+            if(!tilesBuilt){
 
-        camera.updateProjectionMatrix();
+                showMessage(
+                    "⚠️ Complete the floor tiles first."
+                );
 
-        renderer.setSize(
-            window.innerWidth,
-            window.innerHeight
+                return;
+
+            }
+
+            if(electricalBuilt){
+
+                showMessage(
+                    "Electrical system already installed."
+                );
+
+                return;
+
+            }
+
+            const wireMaterial =
+                new THREE.MeshStandardMaterial({
+                    color: 0x222222
+                });
+
+
+            /* MAIN ELECTRICAL LINE */
+
+            const mainWire =
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        0.08,
+                        0.08,
+                        4
+                    ),
+                    wireMaterial
+                );
+
+            mainWire.position.set(
+                0,
+                3.45,
+                0
+            );
+
+            scene.add(mainWire);
+
+
+            /* SIDE LINE */
+
+            const sideWire =
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        4.8,
+                        0.08,
+                        0.08
+                    ),
+                    wireMaterial
+                );
+
+            sideWire.position.set(
+                0,
+                3.45,
+                0
+            );
+
+            scene.add(sideWire);
+
+
+            electricalBuilt = true;
+
+            showMessage(
+                "⚡ Electrical system installed."
+            );
+
+            updateProgress();
+
+        }
+
+
+        /* LIGHTING */
+
+        function buildLighting(){
+
+            if(!electricalBuilt){
+
+                showMessage(
+                    "⚠️ Install electrical system first."
+                );
+
+                return;
+
+            }
+
+            if(lightingBuilt){
+
+                showMessage(
+                    "Lighting already installed."
+                );
+
+                return;
+
+            }
+
+            const lightMaterial =
+                new THREE.MeshStandardMaterial({
+                    color: 0xffff99,
+                    emissive: 0xffff33,
+                    emissiveIntensity: 1
+                });
+
+
+            const light =
+                new THREE.Mesh(
+                    new THREE.SphereGeometry(
+                        0.18,
+                        16,
+                        16
+                    ),
+                    lightMaterial
+                );
+
+            light.position.set(
+                0,
+                3.3,
+                0
+            );
+
+            scene.add(light);
+
+
+            const lamp =
+                new THREE.PointLight(
+                    0xffffff,
+                    2,
+                    10
+                );
+
+            lamp.position.set(
+                0,
+                3.1,
+                0
+            );
+
+            scene.add(lamp);
+
+
+            lightingBuilt = true;
+
+            showMessage(
+                "💡 Lighting installed."
+            );
+
+            updateProgress();
+
+        }
+
+
+        /* INSPECTION */
+
+        function inspectBuilding(){
+
+            if(!foundationBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: foundation missing."
+                );
+
+                return;
+
+            }
+
+            if(wallRows < 7){
+
+                showMessage(
+                    "❌ Inspection failed: walls incomplete."
+                );
+
+                return;
+
+            }
+
+            if(!doorBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: door missing."
+                );
+
+                return;
+
+            }
+
+            if(!windowBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: windows missing."
+                );
+
+                return;
+
+            }
+
+            if(!roofBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: roof missing."
+                );
+
+                return;
+
+            }
+
+            if(!plasterBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: plaster incomplete."
+                );
+
+                return;
+
+            }
+
+            if(!ceilingBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: ceiling missing."
+                );
+
+                return;
+
+            }
+
+            if(!tilesBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: floor tiles missing."
+                );
+
+                return;
+
+            }
+
+            if(!electricalBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: electrical system missing."
+                );
+
+                return;
+
+            }
+
+            if(!lightingBuilt){
+
+                showMessage(
+                    "❌ Inspection failed: lighting missing."
+                );
+
+                return;
+
+            }
+
+
+            showMessage(
+                "🏆 BUILDING PASSED INSPECTION! HOUSE COMPLETE!"
+            );
+
+            document.getElementById(
+                "progress"
+            ).textContent =
+                "100% COMPLETE 🏆";
+
+        }
+
+
+        /* PROGRESS */
+
+        function updateProgress(){
+
+            let completed = 0;
+
+            if(foundationBuilt)
+                completed++;
+
+            if(wallRows >= 7)
+                completed++;
+
+            if(doorBuilt)
+                completed++;
+
+            if(windowBuilt)
+                completed++;
+
+            if(roofBuilt)
+                completed++;
+
+            if(plasterBuilt)
+                completed++;
+
+            if(ceilingBuilt)
+                completed++;
+
+            if(tilesBuilt)
+                completed++;
+
+            if(electricalBuilt)
+                completed++;
+
+            if(lightingBuilt)
+                completed++;
+
+
+            const percent =
+                Math.round(
+                    (completed / 10) * 100
+                );
+
+            document.getElementById(
+                "progress"
+            ).textContent =
+                percent + "% COMPLETE";
+
+        }
+
+
+        /* ANIMATION */
+
+        function animate(){
+
+            requestAnimationFrame(
+                animate
+            );
+
+            renderer.render(
+                scene,
+                camera
+            );
+
+        }
+
+        animate();
+
+
+        /* SCREEN RESIZE */
+
+        window.addEventListener(
+            "resize",
+            function(){
+
+                camera.aspect =
+                    window.innerWidth /
+                    window.innerHeight;
+
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(
+                    window.innerWidth,
+                    window.innerHeight
+                );
+
+            }
         );
 
-    }
-);
-
-updateProgress();
-
-</script>
+    </script>
 
 </body>
 </html>
