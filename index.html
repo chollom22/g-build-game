@@ -838,9 +838,7 @@ function buildPlaster(){
     );
 
     updateProgress();
-}
-
-
+      
 /* =========================
    TOOL SELECTION
 ========================= */
@@ -849,545 +847,403 @@ document
     .querySelectorAll(".tool")
     .forEach(button => {
 
-        button.addEventListener(
-            "click",
-            function(){
+        button.addEventListener("click", function(){
 
-                const tool =
-                    this.dataset.tool;
+            const tool = this.dataset.tool;
 
-                document
-                    .querySelectorAll(".tool")
-                    .forEach(b =>
-                        b.classList.remove(
-                            "active"
-                        )
-                    );
+            document
+                .querySelectorAll(".tool")
+                .forEach(b => b.classList.remove("active"));
 
-                this.classList.add("active");
+            this.classList.add("active");
 
+            if(tool === "foundation") buildFoundation();
+            else if(tool === "blocks") layBrick();
+            else if(tool === "door") buildDoor();
+            else if(tool === "window") buildWindow();
+            else if(tool === "roof") buildRoof();
+            else if(tool === "plaster") buildPlaster();
+            else if(tool === "ceiling") buildCeiling();
+            else if(tool === "tile") buildTiles();
+            else if(tool === "electrical") buildElectrical();
+            else if(tool === "lighting") buildLighting();
+            else if(tool === "inspect") inspectBuilding();
 
-                if(tool === "foundation")
-                    buildFoundation();
-
-                if(tool === "blocks")
-                    layBrick();
-
-                if(tool === "door")
-                    buildDoor();
-
-                if(tool === "window")
-                    buildWindow();
-
-                if(tool === "roof")
-                    buildRoof();
-
-                if(tool === "plaster")
-                    buildPlaster();
-
-            }
-        );
+        });
 
     });
-              /* CEILING */
 
-        function buildCeiling(){
 
-            if(wallRows < 7){
-
-                showMessage(
-                    "⚠️ Complete the walls first."
-                );
-
-                return;
-
-            }
-
-            if(ceilingBuilt){
-
-                showMessage(
-                    "Ceiling already completed."
-                );
-
-                return;
-
-            }
-
-            const ceilingMaterial =
-                new THREE.MeshStandardMaterial({
-                    color: 0xf1f1f1
-                });
-
-            const ceiling =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        5.8,
-                        0.18,
-                        4.6
-                    ),
-                    ceilingMaterial
-                );
-
-            ceiling.position.set(
-                0,
-                3.65,
-                0
-            );
-
-            scene.add(ceiling);
-
-            ceilingBuilt = true;
-
-            showMessage(
-                "✅ Ceiling completed."
-            );
-
-            updateProgress();
-
-        }
-
-
-        /* FLOOR TILES */
-
-        function buildTiles(){
-
-            if(!ceilingBuilt){
-
-                showMessage(
-                    "⚠️ Complete the ceiling first."
-                );
-
-                return;
-
-            }
-
-            if(tilesBuilt){
-
-                showMessage(
-                    "Floor tiles already completed."
-                );
-
-                return;
-
-            }
-
-            const tileMaterial =
-                new THREE.MeshStandardMaterial({
-                    color: 0xd8d8d8
-                });
-
-            for(
-                let x = -2.5;
-                x <= 2.5;
-                x += 0.5
-            ){
-
-                for(
-                    let z = -2;
-                    z <= 2;
-                    z += 0.5
-                ){
-
-                    const tile =
-                        new THREE.Mesh(
-                            new THREE.BoxGeometry(
-                                0.46,
-                                0.04,
-                                0.46
-                            ),
-                            tileMaterial
-                        );
-
-                    tile.position.set(
-                        x,
-                        0.08,
-                        z
-                    );
-
-                    scene.add(tile);
-
-                }
-
-            }
-
-            tilesBuilt = true;
-
-            showMessage(
-                "✅ Floor tiles completed."
-            );
-
-            updateProgress();
-
-        }
-
-
-        /* ELECTRICAL SYSTEM */
-
-        function buildElectrical(){
-
-            if(!tilesBuilt){
-
-                showMessage(
-                    "⚠️ Complete the floor tiles first."
-                );
-
-                return;
-
-            }
-
-            if(electricalBuilt){
-
-                showMessage(
-                    "Electrical system already installed."
-                );
-
-                return;
-
-            }
-
-            const wireMaterial =
-                new THREE.MeshStandardMaterial({
-                    color: 0x222222
-                });
-
-
-            /* MAIN ELECTRICAL LINE */
-
-            const mainWire =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        0.08,
-                        0.08,
-                        4
-                    ),
-                    wireMaterial
-                );
-
-            mainWire.position.set(
-                0,
-                3.45,
-                0
-            );
-
-            scene.add(mainWire);
-
-
-            /* SIDE LINE */
-
-            const sideWire =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        4.8,
-                        0.08,
-                        0.08
-                    ),
-                    wireMaterial
-                );
-
-            sideWire.position.set(
-                0,
-                3.45,
-                0
-            );
-
-            scene.add(sideWire);
-
-
-            electricalBuilt = true;
-
-            showMessage(
-                "⚡ Electrical system installed."
-            );
-
-            updateProgress();
-
-        }
-
-
-        /* LIGHTING */
-
-        function buildLighting(){
-
-            if(!electricalBuilt){
-
-                showMessage(
-                    "⚠️ Install electrical system first."
-                );
-
-                return;
-
-            }
-
-            if(lightingBuilt){
-
-                showMessage(
-                    "Lighting already installed."
-                );
-
-                return;
-
-            }
-
-            const lightMaterial =
-                new THREE.MeshStandardMaterial({
-                    color: 0xffff99,
-                    emissive: 0xffff33,
-                    emissiveIntensity: 1
-                });
-
-
-            const light =
-                new THREE.Mesh(
-                    new THREE.SphereGeometry(
-                        0.18,
-                        16,
-                        16
-                    ),
-                    lightMaterial
-                );
-
-            light.position.set(
-                0,
-                3.3,
-                0
-            );
-
-            scene.add(light);
-
-
-            const lamp =
-                new THREE.PointLight(
-                    0xffffff,
-                    2,
-                    10
-                );
-
-            lamp.position.set(
-                0,
-                3.1,
-                0
-            );
-
-            scene.add(lamp);
-
-
-            lightingBuilt = true;
-
-            showMessage(
-                "💡 Lighting installed."
-            );
-
-            updateProgress();
-
-        }
-
-
-        /* INSPECTION */
-
-        function inspectBuilding(){
-
-            if(!foundationBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: foundation missing."
-                );
-
-                return;
-
-            }
-
-            if(wallRows < 7){
-
-                showMessage(
-                    "❌ Inspection failed: walls incomplete."
-                );
-
-                return;
-
-            }
-
-            if(!doorBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: door missing."
-                );
-
-                return;
-
-            }
-
-            if(!windowBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: windows missing."
-                );
-
-                return;
-
-            }
-
-            if(!roofBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: roof missing."
-                );
-
-                return;
-
-            }
-
-            if(!plasterBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: plaster incomplete."
-                );
-
-                return;
-
-            }
-
-            if(!ceilingBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: ceiling missing."
-                );
-
-                return;
-
-            }
-
-            if(!tilesBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: floor tiles missing."
-                );
-
-                return;
-
-            }
-
-            if(!electricalBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: electrical system missing."
-                );
-
-                return;
-
-            }
-
-            if(!lightingBuilt){
-
-                showMessage(
-                    "❌ Inspection failed: lighting missing."
-                );
-
-                return;
-
-            }
-
-
-            showMessage(
-                "🏆 BUILDING PASSED INSPECTION! HOUSE COMPLETE!"
-            );
-
-            document.getElementById(
-                "progress"
-            ).textContent =
-                "100% COMPLETE 🏆";
-
-        }
-
-
-        /* PROGRESS */
-
-        function updateProgress(){
-
-            let completed = 0;
-
-            if(foundationBuilt)
-                completed++;
-
-            if(wallRows >= 7)
-                completed++;
-
-            if(doorBuilt)
-                completed++;
-
-            if(windowBuilt)
-                completed++;
-
-            if(roofBuilt)
-                completed++;
-
-            if(plasterBuilt)
-                completed++;
-
-            if(ceilingBuilt)
-                completed++;
-
-            if(tilesBuilt)
-                completed++;
-
-            if(electricalBuilt)
-                completed++;
-
-            if(lightingBuilt)
-                completed++;
-
-
-            const percent =
-                Math.round(
-                    (completed / 10) * 100
-                );
-
-            document.getElementById(
-                "progress"
-            ).textContent =
-                percent + "% COMPLETE";
-
-        }
-
-
-        /* ANIMATION */
-
-        function animate(){
-
-            requestAnimationFrame(
-                animate
-            );
-
-            renderer.render(
-                scene,
-                camera
-            );
-
-        }
-
-        animate();
-
-
-        /* SCREEN RESIZE */
-
-        window.addEventListener(
-            "resize",
-            function(){
-
-                camera.aspect =
-                    window.innerWidth /
-                    window.innerHeight;
-
-                camera.updateProjectionMatrix();
-
-                renderer.setSize(
-                    window.innerWidth,
-                    window.innerHeight
-                );
-
-            }
+/* =========================
+   CEILING
+========================= */
+
+function buildCeiling(){
+
+    if(wallRows < 7){
+        showMessage("⚠️ Complete the walls first.");
+        return;
+    }
+
+    if(ceilingBuilt){
+        showMessage("Ceiling already completed.");
+        return;
+    }
+
+    const ceilingMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0xf1f1f1
+        });
+
+    const ceiling =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                5.8,
+                0.18,
+                4.6
+            ),
+            ceilingMaterial
         );
 
-    </script>
+    ceiling.position.set(
+        0,
+        3.65,
+        0
+    );
+
+    house.add(ceiling);
+
+    ceilingBuilt = true;
+
+    showMessage("✅ Ceiling completed.");
+
+    updateProgress();
+}
+
+
+/* =========================
+   FLOOR TILES
+========================= */
+
+function buildTiles(){
+
+    if(!ceilingBuilt){
+        showMessage("⚠️ Complete the ceiling first.");
+        return;
+    }
+
+    if(tilesBuilt){
+        showMessage("Floor tiles already completed.");
+        return;
+    }
+
+    const tileMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0xd8d8d8
+        });
+
+    for(let x=-2.5; x<=2.5; x+=0.5){
+
+        for(let z=-2; z<=2; z+=0.5){
+
+            const tile =
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        0.46,
+                        0.04,
+                        0.46
+                    ),
+                    tileMaterial
+                );
+
+            tile.position.set(
+                x,
+                0.08,
+                z
+            );
+
+            house.add(tile);
+        }
+    }
+
+    tilesBuilt = true;
+
+    showMessage("✅ Floor tiles completed.");
+
+    updateProgress();
+}
+
+
+/* =========================
+   ELECTRICAL SYSTEM
+========================= */
+
+function buildElectrical(){
+
+    if(!tilesBuilt){
+        showMessage("⚠️ Complete the floor tiles first.");
+        return;
+    }
+
+    if(electricalBuilt){
+        showMessage("Electrical system already installed.");
+        return;
+    }
+
+    const wireMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0x222222
+        });
+
+    const mainWire =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                0.08,
+                0.08,
+                4
+            ),
+            wireMaterial
+        );
+
+    mainWire.position.set(
+        0,
+        3.45,
+        0
+    );
+
+    house.add(mainWire);
+
+
+    const sideWire =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                4.8,
+                0.08,
+                0.08
+            ),
+            wireMaterial
+        );
+
+    sideWire.position.set(
+        0,
+        3.45,
+        0
+    );
+
+    house.add(sideWire);
+
+    electricalBuilt = true;
+
+    showMessage("⚡ Electrical system installed.");
+
+    updateProgress();
+}
+
+
+/* =========================
+   LIGHTING
+========================= */
+
+function buildLighting(){
+
+    if(!electricalBuilt){
+        showMessage("⚠️ Install electrical system first.");
+        return;
+    }
+
+    if(lightingBuilt){
+        showMessage("Lighting already installed.");
+        return;
+    }
+
+    const lightMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0xffff99,
+            emissive:0xffff33,
+            emissiveIntensity:1
+        });
+
+    const light =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                0.18,
+                16,
+                16
+            ),
+            lightMaterial
+        );
+
+    light.position.set(
+        0,
+        3.3,
+        0
+    );
+
+    house.add(light);
+
+
+    const lamp =
+        new THREE.PointLight(
+            0xffffff,
+            2,
+            10
+        );
+
+    lamp.position.set(
+        0,
+        3.1,
+        0
+    );
+
+    house.add(lamp);
+
+    lightingBuilt = true;
+
+    showMessage("💡 Lighting installed.");
+
+    updateProgress();
+}
+
+
+/* =========================
+   INSPECTION
+========================= */
+
+function inspectBuilding(){
+
+    if(!foundationBuilt){
+        showMessage("❌ Inspection failed: foundation missing.");
+        return;
+    }
+
+    if(wallRows < 7){
+        showMessage("❌ Inspection failed: walls incomplete.");
+        return;
+    }
+
+    if(!doorBuilt){
+        showMessage("❌ Inspection failed: door missing.");
+        return;
+    }
+
+    if(!windowBuilt){
+        showMessage("❌ Inspection failed: windows missing.");
+        return;
+    }
+
+    if(!roofBuilt){
+        showMessage("❌ Inspection failed: roof missing.");
+        return;
+    }
+
+    if(!plasterBuilt){
+        showMessage("❌ Inspection failed: plaster incomplete.");
+        return;
+    }
+
+    if(!ceilingBuilt){
+        showMessage("❌ Inspection failed: ceiling missing.");
+        return;
+    }
+
+    if(!tilesBuilt){
+        showMessage("❌ Inspection failed: floor tiles missing.");
+        return;
+    }
+
+    if(!electricalBuilt){
+        showMessage("❌ Inspection failed: electrical system missing.");
+        return;
+    }
+
+    if(!lightingBuilt){
+        showMessage("❌ Inspection failed: lighting missing.");
+        return;
+    }
+
+    showMessage(
+        "🏆 BUILDING PASSED INSPECTION! HOUSE COMPLETE!"
+    );
+
+    document.getElementById("progress").style.width =
+        "100%";
+
+    document.getElementById("progressText").textContent =
+        "100% COMPLETE 🏆";
+}
+
+
+/* =========================
+   PROGRESS
+========================= */
+
+function updateProgress(){
+
+    let completed = 0;
+
+    if(foundationBuilt) completed++;
+    if(wallRows >= 7) completed++;
+    if(doorBuilt) completed++;
+    if(windowBuilt) completed++;
+    if(roofBuilt) completed++;
+    if(plasterBuilt) completed++;
+    if(ceilingBuilt) completed++;
+    if(tilesBuilt) completed++;
+    if(electricalBuilt) completed++;
+    if(lightingBuilt) completed++;
+
+    const percent =
+        Math.round(
+            (completed / 10) * 100
+        );
+
+    document.getElementById("progress").style.width =
+        percent + "%";
+
+    document.getElementById("progressText").textContent =
+        percent + "% Complete";
+}
+
+
+/* =========================
+   ANIMATION
+========================= */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+animate();
+
+
+/* =========================
+   SCREEN RESIZE
+========================= */
+
+window.addEventListener(
+    "resize",
+    function(){
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
+      </script>
 
 </body>
 </html>
